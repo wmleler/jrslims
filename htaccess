@@ -1,0 +1,4 @@
+# change subdirectory to query string
+RewriteEngine On
+# RewriteRule ^(.+)$ index.html?$1 [L]
+RewriteRule ^/newslims/(.*)$ /newslims?$1 [NC,L]

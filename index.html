@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=yes" />
+<title>Jack Rabbit Slims</title>
+<link rel="shortcut icon" href="favicon.ico" />
+
+<script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="all.fineuploader-3.8.2.min.js"></script>
+<script type="text/javascript" src="slims.js"></script>
+<link href="fineuploader-3.8.2.min.css" rel="stylesheet">
+<style type="text/css">
+html {
+	-webkit-font-smoothing: antialiased; /* maxvoltar.com/archive/-webkit-font-smoothing */
+}
+body {
+	background: white url('img/back.gif');
+	margin: 7px;
+}
+a:link { color: black; }
+a:visited { color: #400040;}
+#logo {
+	display: none;
+	width: 460px;
+	height: 70px;
+	margin: 0 auto;
+}
+#logo.show {
+	display: block;
+}
+#user {
+	font-weight: bold;
+}
+#others {
+	float: right;
+}
+#messageInput {
+	display: block;
+	width: 99.5%;
+	clear: both;
+	margin: 3px 0;
+}
+#usertime {
+	font-style: italic;
+}
+div.msgdiv {
+	border-top: solid gray 1px;
+	padding: 0.2em 2px;
+	clear: both;
+}
+div.msgdiv img.avatar {
+	display: none;
+	float: left;
+	border: none;
+	margin: 0 5px 2px 0;
+}
+div.msgdiv img.avatar.show {
+	display: block;
+}
+div.msgdiv div.msgbody {
+	margin-top: 1em;
+}
+#formatbuttons {
+	float: right;
+}
+span.button {
+	display: inline-block;
+	border: solid black 1px;
+	border-radius: 3px;
+	padding: 0px 4px;
+	text-align: center;
+	cursor: pointer;
+	height: 18px;
+	vertical-align: top;
+}
+span.small {
+	width: 12px;
+}
+span.button[title="Kibbitz"] { font-family: sans-serif; font-weight: bold; line-height: 18px; }
+.qq-upload-button-hover{ background:white; }
+span.button[title="File Upload"] { font-family: sans-serif; font-size: 13px; line-height: 18px; }
+span.button[title="Link"] { text-decoration:underline; font-family: sans-serif; font-size: 13px; line-height: 18px; }
+span.button[title="Image"] { font-family: sans-serif; font-size: 13px; line-height: 18px; }
+span.button[title="Bold"] { font-weight: bold; }
+span.button[title="Italic"] { font-style: italic; }
+span.button[title="Color"] { color: red; font-family: sans-serif; }
+span.button[title="Size"] { font-family: sans-serif; }
+span.button[title="Block Quote"] { font-weight: bold; }
+span#emoticons, span#specialchars {
+	display: none;
+	position: absolute;
+	right: 7px;
+	background-color: white;
+}
+span#emoticons img:hover, #emobutton:hover {
+	background-color: black;
+}
+span.button:hover {
+	background-color: #ff8;
+}
+span.button:active {
+	background-color: #bbf;
+}
+#fine-uploader {
+	height: 30px;
+}
+blockquote {
+  margin: 5px 0;
+  padding: 0px 30px;
+  background-image: url(img/blockquote.png);
+  background-repeat: no-repeat;
+}
+.userimg {
+	max-width: 95%;
+}
+.userimg.worksmall {
+	max-width: 50px;
+}
+img.close {
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+#profile, #shame {
+	position: absolute;
+	display: none;
+	border: solid black 1px;
+	border-radius: 3px;
+	background-color: white;
+	box-shadow: 5px 5px 3px #666;
+	padding: 4px;
+	z-index: 1000;
+}
+#profile {
+	left: 1em;
+}
+#Pimg {
+	float: left;
+	margin-top: 0.5em;
+}
+#Ptext {
+	font-weight: bold;
+	text-align: left;
+	font-size: 26px;
+	white-space: nowrap;
+}
+#shame {
+	right: 1em;
+}
+#hos {
+	font-weight: bold;
+	font-size: 20px;
+	padding-left: 1em;
+}
+tr.uonline {
+	background-color: #ff8;
+}
+tr.uoffline {
+}
+#shame table td:first-child, #profile table td:first-child {
+	font-weight: bold;
+}
+#email {
+	width: 15em;
+}
+#myavatar {
+	border: solid black 1px;
+	vertical-align: middle;
+}
+#cloakroom {
+	clear: both;
+}
+#cloakroom img {
+	margin: 2px 2px;
+	border: solid white 2px;
+}
+#cloakroom img:hover {
+	border-color: black;
+}
+#cloakroom img:active {
+	border-color: #bbf;
+}
+#helpdiv {
+	display: none;
+	position: absolute;
+	overflow: auto;
+	top: 200px;
+	left: 2%;
+	width: 90%;
+	background-color: white;
+	border: solid black 1px;
+	box-shadow: 5px 5px 3px #666;
+	padding: 15px;
+	z-index: 1000;
+}
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+	html {
+		-webkit-text-size-adjust: none;
+		text-size-adjust: none;
+	}
+	#logo {
+		width: 302px;
+		height: 50px;
+	}
+	#usertime {
+		max-width: 64px;
+		overflow: hidden;
+	}
+}
+</style>
+</head>
+<body>
+	<img id="logo" src="img/title.gif" title="Jack Rabbit Slim's" />
+	<span id="user" class="button">?</span>
+	<div id="profile"></div>
+	<span id="others" class="button"></span>
+	<div id="shame"></div>
+	<textarea id="messageInput" placeholder="Message" rows="3"></textarea>
+	<span id="kibbitz" class="button small" title="Kibbitz">+</span>
+	<span id="usertime" class="button">Loading...</span>
+	<span id="formatbuttons">
+		<span id="fileup" class="button" title="File Upload">File</span>
+		<span class="button" title="Link">link</span>
+		<span class="button" title="Image">img</span>
+		<span class="button small" title="Bold">b</span>
+		<span class="button small" title="Italic">i</span>
+		<span class="button small" title="Color">c</span>
+		<span class="button small" title="Size">S</span>
+		<span class="button small" title="Block Quote">"</span>
+		<span id="spcbutton" class="button small" title="Special Characters">&copy;</span>
+		<img id="emobutton" src="emoticons/blank.gif" title="Emoticons" />
+	</span>
+	<span id="emoticons">
+		<img src="emoticons/elvis.png" title="elvis" />
+		<img src="emoticons/dead.png" title="dead" />
+		<img src="emoticons/happyno.gif" title="no" />
+		<img src="emoticons/yes.gif" title="yes" />
+		<img src="emoticons/insomnia.gif" title="insomnia" />
+		<img src="emoticons/yawn.gif" title="yawn" />
+		<img src="emoticons/bleh.gif" title="bleh" />
+		<img src="emoticons/sweat.gif" title="sweat" />
+		<img src="emoticons/pirate.gif" title="pirate" />
+		<img src="emoticons/blushing.gif" title="blushing" />
+		<img src="emoticons/devil.gif" title="devil" />
+		<img src="emoticons/sealed.gif" title="sealed" />
+		<img src="emoticons/braces.gif" title="braces" />
+		<img src="emoticons/undecided.gif" title="undecided" />
+		<img src="emoticons/innocent.gif" title="innocent" />
+		<img src="emoticons/yelling.gif" title="yelling" />
+		<img src="emoticons/headbang.gif" title="headbang" />
+		<img src="emoticons/surprise.gif" title="surprise" />
+		<img src="emoticons/cool.gif" title="cool" />
+		<img src="emoticons/wink.gif" title="wink" />
+		<img src="emoticons/tongue.gif" title="tongue" />
+		<img src="emoticons/laughing.gif" title="laughing" />
+		<img src="emoticons/lol.gif" title="lol" />
+		<img src="emoticons/frown.gif" title="frown" />
+		<img src="emoticons/smile.gif" title="smile" />
+	</span>
+	<span id="specialchars">
+		<span class="special button">&iexcl;</span>
+		<span class="special button">&iquest;</span>
+		<span class="special button">&ntilde;</span>
+		<span class="special button">&bull;</span>
+		<span class="special button">&hearts;</span>
+		<span class="special button">&mdash;</span>
+		<span class="special button">&euro;</span>
+		<span class="special button">&cent;</span>
+		<span class="special button">&frac12;</span>
+		<span class="special button">&ldquo;</span>
+		<span class="special button">&rdquo;</span>
+		<span class="special button">&amp;</span>
+		<span class="special button">&lt;</span>
+		<span class="special button">&gt;</span>
+		<span class="special button">&copy;</span>
+		<span class="special button">&deg;F</span>
+		<span class="special button">&deg;C</span>
+	</span>
+	<div style="height: 3px"></div>
+	<div id="fine-uploader"></div>
+	<div id="messagesDiv"></div>
+	<div id="helpdiv">
+		<img class="close" src="img/close_icon.gif" />
+		<h2>Jack Rabbit Slims Guide</h2>
+		<h3>First Time</h3>
+		<p>When you visit Slims, it will ask you for your ID.  If you already have one, type it in.
+		Otherwise, pick one using the characters A-Z a-z 0-9 _ and space.
+		Yes, you can have a space in your ID; for example: "Jack at Work".</p>
+		<p>The first time you enter Slims, it will open a profile window for you (in addition to this help page).
+		Enter your email address, select an avatar, and specify if you want to use Slims in work mode.</p>
+		<p>To make it easier to access Slims, type in the Slims URL into your browser, followed by a question mark and then your ID.
+		For example, if your ID is "jack", use:<br />&nbsp;&nbsp;<span class="scripturl"></span>?jack<br />
+		If your ID contains a space character, use "%20" instead of a space;
+		for example:<br />&nbsp;&nbsp;<span class="scripturl"></span>?Jack%20at%20Work<br />
+		Enter Slims and then set a bookmark on your browser to that page.</p>
+		<p>You can also override your profile in your bookmark.
+		For example, if you want a bookmark on your work machine that guarantees that you start up in work mode,
+		set a bookmark like:<br />&nbsp;&nbsp;<span class="scripturl"></span>?id=jack&work=true<br />You can also override "email" and "avatar".</p>
+		<h3>Using Slims</h3>
+		<p>Inside Slims, you can click on the following things:
+			the Jack Rabbit Slims logo to see this help page;
+			your ID button (upper left) to see and edit your profile;
+			the "Connected" / "Last Lurk" button (upper right) to see when people connected and disconnected;
+			the "+" button to post a message;
+			the current time button to update the current time;
+			and the formatting buttons.</p>
+		<p>The ten formatting buttons are: "File" to upload an image or other file from your local computer;
+			"link" to create a link; "img" to create an image from a URL;
+			"b" to make text bold; "i" to make text italic; "c" to change the color of text; "S" to change the size of text;
+			"&copy;" to insert special characters; and the yellow circle to insert an emoticon.
+			You can also drag and drop files (including images) onto Slims to upload them from your local computer.</p>
+		<p>Click on any message to mark that you have seen it (and all messages below it).
+		This is not required, it just helps you remember what messages you have read.</p>
+		<p>In addition to clicking on the "+" button, you can submit a message to Slims by
+		holding down the Shift key on your keyboard and hitting the Enter/Return key.
+		If you do either of these when you have not typed in a message, Slims will update the message times.</p>
+		<p>In work mode, the "Jack Rabbit Slims" logo disappears, as do the user avatar icons.
+		In addition, any images posted by users are shrunk down to thumbnails.
+		To see the full sized image, just click on it. To shrink it back down, click on it again.</p>
+		<p>You can access this help page again by clicking on the "Jack Rabbit Slims" logo (except in work mode).</p>
+	</div>
+</body>
+</html>
