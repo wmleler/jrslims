@@ -1,7 +1,7 @@
 // Jack Rabbit Slims chat room
 /*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true,
   strict:true, undef:true, unused:true, curly:true, indent:false */
-/*global jQuery:false, Firebase:false, document:false */
+/*global jQuery:false, Firebase:false, document:false, console:false, prompt:false */
 
 (function($) {
 	"use strict";
@@ -101,7 +101,7 @@
       var now = new Date();
       $('#usertime').html('<time>'+now.toLocaleTimeString()+'</time>').attr('title', now.toLocaleDateString()).click(uptime);
 
-      timeout = now.valueOf();      
+      timeout = now.valueOf();
       setTimeout( function() {  // delay until after logo appears
         msgdb.on('child_added', addmessages); // start getting messages
         msgdb.on('child_removed', dropmessages);  // remove from messages list
@@ -174,7 +174,7 @@
             $('#kibbitz').click();
           }
           return false;
-        } 
+        }
       }
       var el = e.delegateTarget;
       if (el.scrollHeight > el.clientHeight) { el.style.height = el.scrollHeight+'px'; }
@@ -253,7 +253,7 @@
         }
       }
 
-      function cleanupmsg(snap, second) { // delete old message and files
+      function cleanupmsg(snap /*, second */) { // delete old message and files
         var m = snap.val();
         if (m.stamp < (new Date()) - KEEPTIME) {  // should use priority
           // console.log('remove', snap.name());
@@ -355,7 +355,7 @@
         insert(c);
       } else {
         temperature(c.charAt(pos));
-      }      
+      }
       $(document).off('click', cancelspc);
       $('#specialchars span').off('click', spc);
       $('#specialchars').hide();
@@ -494,7 +494,7 @@
           }
         }
       });
-      $('#others').text(list.length > 0 ? 'Connected: ' + list :
+      $('#others').text(list.length > 0 ? 'On: ' + list :
         'Last lurk: ' + (lurktime === 0 ? 'none' : lurker ));
     });
 
