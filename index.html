@@ -6,18 +6,18 @@
 <title>Jack Rabbit Slims</title>
 <link rel="shortcut icon" href="favicon.ico" />
 
-<script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="all.fineuploader-3.8.2.min.js"></script>
+<script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.17/firebase.js'></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="all.fineuploader-5.0.6.min.js"></script>
 <script type="text/javascript" src="slims.js"></script>
-<link href="fineuploader-3.8.2.min.css" rel="stylesheet">
+<link href="fineuploader-5.0.6.min.css" rel="stylesheet" />
 <style type="text/css">
 html {
 	-webkit-font-smoothing: antialiased; /* maxvoltar.com/archive/-webkit-font-smoothing */
 }
 body {
 	background: white url('img/back.gif');
-	margin: 7px;
+	margin: 7px 18px 7px 10px;
 }
 a:link { color: black; }
 a:visited { color: #400040;}
@@ -90,9 +90,7 @@ span.button[title="Size"] { font-family: sans-serif; }
 span.button[title="Block Quote"] { font-weight: bold; }
 span#emoticons, span#specialchars {
 	display: none;
-	position: absolute;
-	right: 7px;
-	background-color: white;
+	float: right;
 }
 span#emoticons img:hover, #emobutton:hover {
 	background-color: black;
@@ -165,6 +163,9 @@ tr.uoffline {
 #email {
 	width: 15em;
 }
+#birthday {
+	width: 3em;
+}
 #myavatar {
 	border: solid black 1px;
 	vertical-align: middle;
@@ -213,6 +214,37 @@ tr.uoffline {
 	}
 }
 </style>
+<!-- Fine uploader template -->
+<script type="text/template" id="qq-template">
+  <div class="qq-uploader-selector qq-uploader">
+    <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+      <span>Drop files here to upload</span>
+    </div>
+    <div class="qq-upload-button-selector qq-upload-button">
+      <div>Upload a file</div>
+    </div>
+    <span class="qq-drop-processing-selector qq-drop-processing">
+      <span>Processing dropped files...</span>
+      <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+    </span>
+    <ul class="qq-upload-list-selector qq-upload-list">
+      <li>
+        <div class="qq-progress-bar-container-selector">
+          <div class="qq-progress-bar-selector qq-progress-bar"></div>
+        </div>
+        <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+        <span class="qq-edit-filename-icon-selector qq-edit-filename-icon"></span>
+        <span class="qq-upload-file-selector qq-upload-file"></span>
+        <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+        <span class="qq-upload-size-selector qq-upload-size"></span>
+        <a class="qq-upload-cancel-selector qq-upload-cancel" href="#">Cancel</a>
+        <a class="qq-upload-retry-selector qq-upload-retry" href="#">Retry</a>
+        <a class="qq-upload-delete-selector qq-upload-delete" href="#">Delete</a>
+        <span class="qq-upload-status-text-selector qq-upload-status-text"></span>
+      </li>
+    </ul>
+  </div>
+</script>
 </head>
 <body>
 	<img id="logo" src="img/title.gif" title="Jack Rabbit Slim's" />
@@ -237,6 +269,7 @@ tr.uoffline {
 	</span>
 	<span id="emoticons">
 		<img src="emoticons/elvis.png" title="elvis" />
+		<img src="emoticons/poo.png" title="poo" />
 		<img src="emoticons/dead.png" title="dead" />
 		<img src="emoticons/happyno.gif" title="no" />
 		<img src="emoticons/yes.gif" title="yes" />
@@ -263,7 +296,10 @@ tr.uoffline {
 		<img src="emoticons/smile.gif" title="smile" />
 	</span>
 	<span id="specialchars">
-		<span class="special button">&iexcl;</span>
+<!-- 		<span class="special button">&#x1f600;</span> Unicode emoticons
+		<span class="special button">&#x1f607;</span>
+ -->
+ 		<span class="special button">&iexcl;</span>
 		<span class="special button">&iquest;</span>
 		<span class="special button">&ntilde;</span>
 		<span class="special button">&bull;</span>

@@ -7,18 +7,19 @@
 	"use strict";
 
   var DATABASE = 'https://jrslims.firebaseIO.com/';
-  var KEEPNUM = 250;  // number of posts to keep
-  var KEEPTIME = 86400000;  // keep posts for one day
+  var KEEPNUM = 250;  // minimum number of posts to keep
+  var KEEPTIME = 86400000;  // keep posts for at least one day
 
   // profile data
   var id = ''; // userid
   var work = false; // work mode
   var email = '';  // email address
   var avatar = ''; // user icon
+	var birthmonth = 0, birthday = 0, birthlast = 0;	// birthday greetings
 
   // global variables
   var me; // user object
-  var lastseen = 0; // last post I've seen
+  var lastseen = 0; // last post I've marked
   var online = true;  // am I connected to Firebase?
   var messageBodies = {};  // message bodies, keyed by Firebase name
   var files = []; // uploaded files for a message
@@ -39,7 +40,24 @@
     paramOverride = true;
   }
 
+	function getParams(st) {
+		var p = {}; // parameters
+		st.replace(/[?&;]\s?([^=&;]+)=([^&;]*)/gi,
+				function(m,key,value) { p[key] = value; });
+		console.log(p);
+		if (p['work'] && p['work']==='true') { work = true; }
+	}
+
+	function setCookie(name, value) {
+		var date = new Date();
+		date.setTime(date.getTime() + 730*86400000); // 2 years
+		document.cookie = name+'='+value+'; expires='+date.toGMTString()+'; path='+window.location.pathname;
+	}
+
   $(document).ready(function() {
+
+		getParams('?'+document.cookie); // work param from cookie
+		$('#logo').attr('class', work ? '' : 'show');
 
     // determine user id
     while (id.search(/^[\w ]{1,}$/) !== 0) {
@@ -63,7 +81,7 @@
     var usersdb = firebasedb.child('users');  // all user profiles
     var myuserdb = usersdb.child(id);  // my profile
 
-    myuserdb.once('value', startup);  // fire startup
+    myuserdb.once('value', startup);  // firebase startup
 
     // get user profile and start messages
     function startup(snap) {
@@ -86,12 +104,14 @@
         $('#user, #logo').click();
       }
       if (me.lastseen !== undefined) { lastseen = me.lastseen; }
-      if (me.work !== undefined) { work = me.work; }
+      // if (me.work !== undefined) { work = me.work; }
       if (me.email !== undefined) { email = me.email; }
       if (me.avatar !== undefined) { avatar = me.avatar; }
+			if (me.birthmonth !== undefined) { birthmonth = +me.birthmonth; }
+			if (me.birthday !== undefined) { birthday = +me.birthday; }
+			if (me.birthlast !== undefined) { birthlast = +me.birthlast; }
 
       if (paramOverride) { getParams(window.location.href); }
-      $('#logo').attr('class', work ? '' : 'show');
 
       myonoffdb = onoffdb.child(id);
       connectdb.on('value', presencechange);
@@ -106,10 +126,15 @@
         msgdb.on('child_added', addmessages); // start getting messages
         msgdb.on('child_removed', dropmessages);  // remove from messages list
       }, 10);
-    } // end get user profile
+    } // end startup (get user profile)
 
     function addmessages(snap) {  // add messages to page
       var message = snap.val();
+      // if (message.name === 'Wayne' && message.host === undefined && message.text.slice(0,5) === '<font') {
+			// 	snap.ref().remove();
+			// 	if (console && console.log) { console.log('happy birthday die die die'); }
+			// 	return;
+			// }
       var mstamp = message.stamp;
       var name = '<strong>'+(message.email ? '<a href="mailto:'+message.email+'">'+message.name+'</a>' : message.name)+'</strong>' +
         (message.host ? ' ('+message.host+')' : '');
@@ -135,6 +160,21 @@
         newdiv.css({ 'background-color': '#ffffe8', 'border-top': 'solid black 3px' });
       }
       messageBodies[snap.name()] = newdiv.html();  // keep track of messages
+
+			// var now = new Date();
+			// if (now.getDate() === birthday && now.getMonth() + 1 === birthmonth &&
+			// 		now.getFullYear() > birthlast) {	// birthday greetings!
+			// 	birthlast = now.getFullYear();
+			// 	myuserdb.update({ birthlast: birthlast });
+			// 	var post = {
+			// 		name: id,
+			// 		text: '<font size="+3">Today is '+id+'&#39;s Birthday!</font><br /><img src="img/birthday.jpg />"',
+			// 		stamp: Firebase.ServerValue.TIMESTAMP
+			// 	};
+			// 	if (email) { post.email = email; }
+			// 	if (avatar) { post.avatar = avatar; }
+			// 	msgdb.push().setWithPriority(post, Firebase.ServerValue.TIMESTAMP);
+			// }
     } // end get messages
 
     function dropmessages(snap) { // sync from Firebase
@@ -207,7 +247,7 @@
           //   var result = $(this).text().replace(/\r\n|[\n\r\x85]/g, '<br />'). // newlines to breaks
           //       replace(urlRegex, '<a href="$&" target="_blank">$&</a>').
           //       replace(mailRegex, '<a href="mailto:$&">$&</a>');
-          //   console.log('result:', result);              
+          //   console.log('result:', result);
           //   this.innerHtml = result;
           // });
           // mess = $message.html();
@@ -287,21 +327,20 @@
     $('#messagesDiv').on('click', '.msgdiv', function() {
       var $this = $(this);
       var mts = $this.find('.msgtime').data('mts');
-      // console.log(mts, lastseen, mts > lastseen, mts === lastseen);
       if (mts > lastseen) {
         lastseen = mts;
-        myuserdb.update({'lastseen': lastseen}, oncomplete); // save time of last seen
-        $('.msgdiv').css('border-top', 'solid gray 1px');
-        $this.css({ 'background-color': '#ffffe8', 'border-top': 'solid black 3px' }).nextAll().css('background-color', '#ffffe8');
+        myuserdb.update({'lastseen': lastseen}); // save time of last seen
       }
       uptime();
     });
 
-    function oncomplete(err) {
-      if (err !== null) {
-        if (console && console.log) { console.log('error updating lastseen: ', err); }
-      }
-    }
+		myuserdb.child('lastseen').on('value', function(snap) {
+			var ls = snap.val();
+			$('.msgdiv').css('border-top', 'solid gray 1px').filter(function(i, el) {
+				return $(this).find('.msgtime').data('mts') <= ls;
+			}).css('background-color', '#ffffe8').
+					first().css({ 'border-top': 'solid black 3px' });
+		});
 
     // drag and drop file uploader
     $('#fine-uploader').fineUploader({
@@ -331,6 +370,7 @@
       $(document).off('click', cancelemo);
       $('#emoticons img').off('click', emo);
       $('#emoticons').hide();
+			$('#formatbuttons').show();
       return false;
     }
 
@@ -338,9 +378,12 @@
       $(document).off('click', cancelemo);
       $('#emoticons img').off('click', emo);
       $('#emoticons').hide();
+			$('#formatbuttons').show();
     }
 
     $('#emobutton').on('click', function() {
+			console.log($('#emoticons').css('top'));
+			$('#formatbuttons').hide();
       $('#emoticons').show();
       $('#emoticons img').on('click', emo);
       $(document).on('click', cancelemo);
@@ -359,6 +402,7 @@
       $(document).off('click', cancelspc);
       $('#specialchars span').off('click', spc);
       $('#specialchars').hide();
+			$('#formatbuttons').show();
       return false;
     }
 
@@ -366,9 +410,11 @@
       $('#specialchars span').off('click', spc);
       $(document).off('click', cancelspc);
       $('#specialchars').hide();
+			$('#formatbuttons').show();
     }
 
     $('#spcbutton').on('click', function() {
+			$('#formatbuttons').hide();
       $('#specialchars').show();
       $('#specialchars span').on('click', spc);
       $(document).on('click', cancelspc);
@@ -382,7 +428,12 @@
           '</td></tr><tr><td colspan="2" style="font-weight:normal">('+client+
           ')</td></tr><tr><td style="text-align:right">Work:</td><td><input id="work" type="checkbox" '+(work ? 'checked="checked" ' : '')+
           ' /></td></tr><tr><td style="text-align:right">Email:</td><td><input id="email" type="text" value="'+
-          email+'" /></td></tr><tr><td style="text-align:right">Avatar:</td><td><img id="myavatar" src="'+
+          email+'" /></td></tr><tr><td style="text-align:right">Birthday:</td><td><select id="birthmonth" value="'+
+					birthmonth+'"><option value="0">select</option><option value="1">Jan</option><option value="2">Feb</option>'+
+					'<option value="3">March</option><option value="4">April</option><option value="5">May</option><option value="6">June</option>'+
+					'<option value="7">July</option><option value="8">Aug</option><option value="9">Sept</option><option value="10">Oct</option>'+
+					'<option value="11">Nov</option><option value="12">Dec</option></select> <input id="birthday" type="number" min="0" max="31" value="'+
+					birthday+'" /></td></tr><tr><td style="text-align:right">Avatar:</td><td><img id="myavatar" src="'+
           avatar+'" width="39" height="50" /> <input id="avatarurl" type="text" value="'+
           avatar+'" /></td></tr></table><div id="cloakroom"></div>';
       $('#profile').show().on('click', 'img.close', cancelprofile).html(table);
@@ -395,12 +446,23 @@
           $('#logo, div.msgdiv img.avatar').addClass('show');
           $('img.userimg').removeClass('worksmall').off('click', imagebig);
         }
-        setTimeout(function() { myuserdb.update({ work: work }); }, 10);
+				setCookie('work', work ? 'true' : 'false');
+        // setTimeout(function() { myuserdb.update({ work: work }); }, 10);
       });
       $('#email').change(function() {
         email = $.trim($(this).val());
         setTimeout(function() { myuserdb.update({ email: email }); }, 10);
       });
+			$('#birthmonth').val(birthmonth).change(function() {
+				birthmonth = $.trim($(this).val());
+				setTimeout(function() { myuserdb.update({ birthmonth: birthmonth }); }, 10);
+      	if (console && console.log) { console.log('birthmonth:', +birthmonth); }
+			});
+			$('#birthday').change(function() {
+				birthday = $.trim($(this).val());
+				setTimeout(function() { myuserdb.update({ birthday: birthday }); }, 10);
+      	if (console && console.log) { console.log('birthday:', +birthday); }
+			});
       $('#myavatar').parent().on('click', function() {
         if ($('#cloakroom img').length > 0) { return; }
         $.each(slimages, function(k, v) {
@@ -583,7 +645,7 @@
       var sel = el.value.substring(ss, se);
       el.value = el.value.substring(0, ss) + ts + sel + te + el.value.substring(se, el.value.length);
       el.selectionStart = el.selectionEnd = ss + ts.length + (sel.length === 0 ? 0 : sel.length + te.length);
-    } else {  // IE      
+    } else {  // IE
       var selected = document.selection.createRange().text;
       document.selection.createRange().text = ts + selected + te;
     }
