@@ -122,8 +122,10 @@
     function addmessages(snap) {  // add messages to page
       var message = snap.val();
       var mstamp = message.stamp;
-      var name = '<strong>'+(message.email ? '<a href="mailto:'+message.email+'">'+message.name+'</a>' : message.name)+'</strong>' +
-        (message.host ? ' ('+message.host+')' : '');
+      var name = '<strong>'+(message.email ?
+					'<a href="mailto:'+message.email+'">'+message.name+'</a>' :
+					message.name)+'</strong>' +
+        	(message.host ? ' ('+message.host+')' : '');
       var now = (new Date()).valueOf();
       if (now - timeout > 5000) { // 5 seconds
         uptime();
@@ -136,16 +138,18 @@
       newdiv.append($('<span/>').html(name)).
         append($('<span/>', {'class': 'msgtime'}).data('mts', mstamp).
             html('<br /><time>'+deltaTime(now - mstamp)+' ago</time>')).
-        append($('<div/>', { 'class': 'msgbody' }).html(message.text)).
-        prependTo($('#messagesDiv'));
+        append($('<div/>', { 'class': 'msgbody' }).html(message.text));
 			newdiv.find('.msgbody iframe').wrap('<div class="uservid" />');
 			newdiv.find('.msgbody img:not([src^="emoticons/"])').wrap('<div class="userimg" />');
 			newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
-      if (mstamp <= lastseen) {
+			$('#messagesDiv').prepend(newdiv);
+			if (mstamp <= lastseen) {
 				newdiv.addClass('read');
-      }
+      } else {
+				newdiv.hide().slideDown('slow');	// slow reveal
+			}
       messageBodies[snap.name()] = newdiv.html();  // keep track of messages
-    } // end get messages
+    } // end add messages
 
     function dropmessages(snap) { // sync from Firebase
       var name = snap.name();
@@ -274,13 +278,14 @@
 
     }); // end click on kibbitz button (post new message)
 
+		// delete / edit message
 		$('#delmsg').click( function() {
 			if (lastpost === null) { return; }
 			var name = lastpost.name();	// get generated name of last post
 			var msgbody = $('#'+name+' .msgbody').html();
 			$('#messageInput').val(msgbody);
-			lastpost.remove();
 			$('#delmsg').css('display', 'none');
+			lastpost.remove();
 			lastpost = null;
 		});
 
