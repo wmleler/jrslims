@@ -119,13 +119,10 @@
       }, 10);
     } // end startup (get user profile)
 
-    function addmessages(snap) {  // add messages to page
+		// add messages to page
+    function addmessages(snap) {
       var message = snap.val();
       var mstamp = message.stamp;
-      var name = '<strong>'+(message.email ?
-					'<a href="mailto:'+message.email+'">'+message.name+'</a>' :
-					message.name)+'</strong>' +
-        	(message.host ? ' ('+message.host+')' : '');
       var now = (new Date()).valueOf();
       if (now - timeout > 5000) { // 5 seconds
         uptime();
@@ -135,9 +132,12 @@
       if (message.avatar) {
         $('<img/>', { 'class': 'avatar'+(work ? '' : ' show'), src: message.avatar }).appendTo(newdiv);
       }
-      newdiv.append($('<span/>').html(name)).
-        append($('<span/>', {'class': 'msgtime'}).data('mts', mstamp).
-            html('<br /><time>'+deltaTime(now - mstamp)+' ago</time>')).
+			newdiv.append('<strong>'+(message.email ?
+					'<a href="mailto:'+message.email+'">'+message.name+'</a>' :
+					message.name)+'</strong>').
+				append(message.host ? ' ('+message.host+')' : '').
+        append($('<div/>', {'class': 'msgtime'}).data('mts', mstamp).
+        html('<time>'+deltaTime(now - mstamp)+' ago</time>')).
         append($('<div/>', { 'class': 'msgbody' }).html(message.text));
 			newdiv.find('.msgbody iframe').wrap('<div class="uservid" />');
 			newdiv.find('.msgbody img:not([src^="emoticons/"])').wrap('<div class="userimg" />');
