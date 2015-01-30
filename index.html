@@ -17,7 +17,7 @@ html {
 }
 body {
 	background: white url('img/back.gif');
-	margin: 7px 18px 7px 10px;
+	margin: 7px 18px 7px 7px;
 }
 a:link { color: black; }
 a:visited { color: #400040;}
@@ -45,10 +45,25 @@ a:visited { color: #400040;}
 #usertime {
 	font-style: italic;
 }
+#delmsg {
+	display: none;
+	padding-right: 6px;
+}
 div.msgdiv {
 	border-top: solid gray 1px;
-	padding: 0.2em 2px;
+	padding: 0.2em 2px 0.2em 5px;
 	clear: both;
+	margin-left: 3px;
+}
+div.msgdiv.read {
+	margin-left: 0;
+	border-left: solid black 3px;
+	border-right: solid black 3px;
+}
+div.msgdiv:not(.read) + div.msgdiv.read,
+div.msgdiv.read:first-of-type {
+	border-top: dotted black 3px;
+	border-radius: 6px 6px 0 0;
 }
 div.msgdiv img.avatar {
 	display: none;
@@ -61,6 +76,7 @@ div.msgdiv img.avatar.show {
 }
 div.msgdiv div.msgbody {
 	margin-top: 1em;
+	white-space: pre-line;
 }
 #formatbuttons {
 	float: right;
@@ -118,20 +134,20 @@ div.userimg.worksmall img {
 	max-width: 50px;
 	pointer-events: none;
 }
-div.userimg.icon.worksmall:after {
+div.userimg.worksmall:after {
 	content: " " url(img/expand.png);
 }
-div.userimg.icon:after {
+div.userimg:after {
 	content: " " url(img/shrink.png);
 }
 div.uservid.worksmall iframe {
 	width: 128px;
 	height: 96px;
 }
-div.uservid.icon.worksmall:after {
+div.uservid.worksmall:after {
 	content: " " url(img/expand.png);
 }
-div.uservid.icon:after {
+div.uservid:after {
 	content: " " url(img/shrink.png);
 }
 img.close {
@@ -180,9 +196,6 @@ tr.uoffline {
 }
 #email {
 	width: 15em;
-}
-#birthday {
-	width: 3em;
 }
 #myavatar {
 	border: solid black 1px;
@@ -273,10 +286,11 @@ tr.uoffline {
 	<textarea id="messageInput" placeholder="Message" rows="3"></textarea>
 	<span id="kibbitz" class="button small" title="Kibbitz">+</span>
 	<span id="usertime" class="button">Loading...</span>
+	<span id="delmsg" class="button small" title="Delete/edit last post">&#9986</span>
 	<span id="formatbuttons">
-		<span id="fileup" class="button" title="File Upload">File</span>
 		<span class="button" title="Link">link</span>
 		<span class="button" title="Image">img</span>
+		<span id="fileup" class="button" title="File Upload">file</span>
 		<span class="button small" title="Bold">b</span>
 		<span class="button small" title="Italic">i</span>
 		<span class="button small" title="Color">c</span>
@@ -353,36 +367,40 @@ tr.uoffline {
 		Otherwise, pick one using the characters A-Z a-z 0-9 _ and space.
 		Yes, you can have a space in your ID; for example: "Jack at Work".</p>
 		<p>The first time you enter Slims, it will open a profile window for you (in addition to this help page).
-		Enter your email address, select an avatar, and specify if you want to use Slims in work mode.</p>
+		Enter your email address and select an avatar.</p>
 		<p>To make it easier to access Slims, type in the Slims URL into your browser, followed by a question mark and then your ID.
-		For example, if your ID is "jack", use:<br />&nbsp;&nbsp;<span class="scripturl"></span>?jack<br />
+		For example, if your ID is "jack", use:<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class="scripturl"></span>?jack<br />
 		If your ID contains a space character, use "%20" instead of a space;
-		for example:<br />&nbsp;&nbsp;<span class="scripturl"></span>?Jack%20at%20Work<br />
+		for example:<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class="scripturl"></span>?Jack%20at%20Work<br />
 		Enter Slims and then set a bookmark on your browser to that page.</p>
 		<p>You can also override your profile in your bookmark.
-		For example, if you want a bookmark on your work machine that guarantees that you start up in work mode,
-		set a bookmark like:<br />&nbsp;&nbsp;<span class="scripturl"></span>?id=jack&work=true<br />You can also override "email" and "avatar".</p>
+		For example, if you want to use a different email address on your work computer, set a bookmark like:
+		<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class="scripturl"></span>?id=jack&email=jack@slims.com
+		<br />You can also override "work", "modifierkey", "enterkey", and "avatar".</p>
 		<h3>Using Slims</h3>
 		<p>Inside Slims, you can click on the following things:
 			the Jack Rabbit Slims logo to see this help page;
 			your ID button (upper left) to see and edit your profile;
-			the "Connected" / "Last Lurk" button (upper right) to see when people connected and disconnected;
+			the "On" button (upper right) to see when people connected and disconnected;
 			the "+" button to post a message;
 			the current time button to update the current time;
 			and the formatting buttons.</p>
-		<p>The ten formatting buttons are: "File" to upload an image or other file from your local computer;
+		<p>The ten formatting buttons are:
 			"link" to create a link; "img" to create an image from a URL;
+			"file" to upload an image or other file from your local computer;
 			"b" to make text bold; "i" to make text italic; "c" to change the color of text; "S" to change the size of text;
 			"&copy;" to insert special characters; and the yellow circle to insert an emoticon.
 			You can also drag and drop files (including images) onto Slims to upload them from your local computer.</p>
 		<p>Click on any message to mark that you have seen it (and all messages below it).
 		This is not required, it just helps you remember what messages you have read.</p>
 		<p>In addition to clicking on the "+" button, you can submit a message to Slims by
-		holding down the Shift key on your keyboard and hitting the Enter/Return key.
+		holding down the Shift key on your keyboard and hitting the Return key
+		(you can change both the modifier key and the enter key in your profile).
 		If you do either of these when you have not typed in a message, Slims will update the message times.</p>
 		<p>In work mode, the "Jack Rabbit Slims" logo disappears, as do the user avatar icons.
-		In addition, any images posted by users are shrunk down to thumbnails.
-		To see the full sized image, just click on it. To shrink it back down, click on it again.</p>
+		In addition, any images or videos posted by users are shrunk down to thumbnails.
+		To see the full sized media, just click on it (or the + button beside it).
+		To shrink it back down, click on it again (or on the – button).</p>
 		<p>You can access this help page again by clicking on the "Jack Rabbit Slims" logo (except in work mode).</p>
 	</div>
 </body>
