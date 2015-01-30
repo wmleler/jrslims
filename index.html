@@ -110,11 +110,29 @@ blockquote {
   background-image: url(img/blockquote.png);
   background-repeat: no-repeat;
 }
-.userimg {
+div.userimg img {
 	max-width: 95%;
+	pointer-events: none;
 }
-.userimg.worksmall {
+div.userimg.worksmall img {
 	max-width: 50px;
+	pointer-events: none;
+}
+div.userimg.icon.worksmall:after {
+	content: " " url(img/expand.png);
+}
+div.userimg.icon:after {
+	content: " " url(img/shrink.png);
+}
+div.uservid.worksmall iframe {
+	width: 128px;
+	height: 96px;
+}
+div.uservid.icon.worksmall:after {
+	content: " " url(img/expand.png);
+}
+div.uservid.icon:after {
+	content: " " url(img/shrink.png);
 }
 img.close {
 	position: absolute;
@@ -270,6 +288,13 @@ tr.uoffline {
 	<span id="emoticons">
 		<img src="emoticons/elvis.png" title="elvis" />
 		<img src="emoticons/poo.png" title="poo" />
+		<img src="emoticons/eyeroll.gif" title="eyeroll" />
+		<img src="emoticons/crying.gif" title="crying" />
+		<img src="emoticons/clap.gif" title="clap" />
+		<img src="emoticons/shame.gif" title="shame" />
+		<img src="emoticons/tmi.gif" title="tmi" />
+		<img src="emoticons/earplug.gif" title="earplug" />
+		<img src="emoticons/shhh.gif" title="shhh" />
 		<img src="emoticons/dead.png" title="dead" />
 		<img src="emoticons/happyno.gif" title="no" />
 		<img src="emoticons/yes.gif" title="yes" />

@@ -39,24 +39,11 @@
     getParams(window.location.href); // params from URL
     paramOverride = true;
   }
-
-	function getParams(st) {
-		var p = {}; // parameters
-		st.replace(/[?&;]\s?([^=&;]+)=([^&;]*)/gi,
-				function(m,key,value) { p[key] = value; });
-		console.log(p);
-		if (p['work'] && p['work']==='true') { work = true; }
-	}
-
-	function setCookie(name, value) {
-		var date = new Date();
-		date.setTime(date.getTime() + 730*86400000); // 2 years
-		document.cookie = name+'='+value+'; expires='+date.toGMTString()+'; path='+window.location.pathname;
-	}
+	getParams('?'+document.cookie);	// from cookie (work)
 
   $(document).ready(function() {
 
-		getParams('?'+document.cookie); // work param from cookie
+		console.log(work, typeof work);
 		$('#logo').attr('class', work ? '' : 'show');
 
     // determine user id
@@ -130,11 +117,6 @@
 
     function addmessages(snap) {  // add messages to page
       var message = snap.val();
-      // if (message.name === 'Wayne' && message.host === undefined && message.text.slice(0,5) === '<font') {
-			// 	snap.ref().remove();
-			// 	if (console && console.log) { console.log('happy birthday die die die'); }
-			// 	return;
-			// }
       var mstamp = message.stamp;
       var name = '<strong>'+(message.email ? '<a href="mailto:'+message.email+'">'+message.name+'</a>' : message.name)+'</strong>' +
         (message.host ? ' ('+message.host+')' : '');
@@ -152,8 +134,10 @@
             html('<br /><time>'+deltaTime(now - mstamp)+' ago</time>')).
         append($('<div/>', { 'class': 'msgbody' }).html(message.text)).
         prependTo($('#messagesDiv'));
+				newdiv.find('.msgbody iframe').wrap('<div class="uservid" />');
+				newdiv.find('.msgbody img:not([src^="emoticon"])').wrap('<div class="userimg" />');
       if (work) {
-        newdiv.find('img.userimg').addClass('worksmall').click(imagebig);
+        newdiv.find('div.userimg, div.uservid').addClass('worksmall icon').click(imagebig);
       }
       if (mstamp <= lastseen) {
         $('.msgdiv').css('border-top', 'solid gray 1px');
@@ -354,7 +338,7 @@
         files.push(responseJSON.uploadName);
         var suffix = fileName.slice(1+fileName.lastIndexOf('.')).toLowerCase();
         if (suffix==='jpg' || suffix==='jpeg' || suffix==='png' || suffix==='gif') {
-          insert('<img class="userimg" src="files/'+responseJSON.uploadName+'" />');
+          insert('<img src="files/'+responseJSON.uploadName+'" />');
         } else if (suffix==='mp3') {
           insert('<audio controls><source src="files/'+responseJSON.uploadName+'" type="audio/mpeg">'+
             '<a href="files/'+responseJSON.uploadName+'" target="_blank">'+fileName+'</a></audio>');
@@ -441,10 +425,10 @@
         work = $(this).prop('checked');
         if (work) {
           $('#logo, div.msgdiv img.avatar').removeClass('show');
-          $('img.userimg').addClass('worksmall').click(imagebig);
+          $('div.userimg, div.uservid').addClass('worksmall icon').click(imagebig);
         } else {
           $('#logo, div.msgdiv img.avatar').addClass('show');
-          $('img.userimg').removeClass('worksmall').off('click', imagebig);
+          $('div.userimg, div.uservid').removeClass('worksmall icon').off('click', imagebig);
         }
 				setCookie('work', work ? 'true' : 'false');
         // setTimeout(function() { myuserdb.update({ work: work }); }, 10);
@@ -623,6 +607,12 @@
     if (params.avatar) { avatar = params.avatar; }
   }
 
+	function setCookie(name, value) {
+		var date = new Date();
+		date.setTime(date.getTime() + 730*86400000); // 2 years
+		document.cookie = name+'='+value+'; expires='+date.toGMTString()+'; path='+window.location.pathname;
+	}
+
   // functions for manipulating and formatting messages
   function insert(str) {  // insert str into message
     var el = $('#messageInput')[0];
@@ -660,14 +650,14 @@
       var sel = el.value.substring(ss, se);
       if (sel.length === 0) { sel = prompt('Enter Image URL:', 'http://'); }
       if (!sel) { return; }
-      var tag = ' <img class="userimg" src="' + sel + '" /> ';
+      var tag = ' <img src="' + sel + '" /> ';
       el.value = el.value.substring(0, ss) + tag + el.value.substring(se, el.value.length);
       el.selectionStart = el.selectionEnd = ss + tag.length;
     } else {  // IE
       var selected = document.selection.createRange().text;
       if (selected.length === 0) { selected = prompt('Enter Image URL:', 'http://'); }
       if (!selected) { return; }
-      document.selection.createRange().text = ' <img class="userimg" src="' + selected + '" /> ';
+      document.selection.createRange().text = ' <img src="' + selected + '" /> ';
     }
   }
 
