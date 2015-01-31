@@ -574,7 +574,7 @@
     var now = new Date();
     $('.msgtime').each(function() {
       var el = $(this);
-      el.html('<br /><time>'+deltaTime(now-el.data('mts'))+' ago</time>');
+      el.html('<time>'+deltaTime(now-el.data('mts'))+' ago</time>');
     });
     if ($('#usertime').text() !== 'Offline') {
       $('#usertime').html('<time>'+now.toLocaleTimeString()+'</time>').attr('title', now.toLocaleDateString());
