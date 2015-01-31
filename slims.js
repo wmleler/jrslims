@@ -1,10 +1,11 @@
 // Jack Rabbit Slims chat room
 /*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true,
-  strict:true, undef:true, unused:true, curly:true, indent:false */
-/*global jQuery:false, Firebase:false, document:false, console:false, prompt:false */
+  strict:true, undef:true, unused:true, curly:true, indent:2 */
+/*global jQuery:false, Firebase:false, window:false, document:false,
+  console:false, prompt:false, setTimeout:false */
 
 (function($) {
-	"use strict";
+  "use strict";
 
   var DATABASE = 'https://jrslims.firebaseIO.com/';
   var KEEPNUM = 250;  // minimum number of posts to keep
@@ -15,7 +16,7 @@
   var work = false; // work mode
   var email = '';  // email address
   var avatar = ''; // user icon
-	var modifierkey = 16, enterkey = 13;	// submit: shift return
+  var modifierkey = 16, enterkey = 13;  // submit: shift return
 
   // global variables
   var me; // user object
@@ -29,9 +30,22 @@
   var messageInputHeight; // height of messageInput textarea
   var paramOverride = false;
   var client = ''; // user's domain or IP address
-	var lastpost = null;	// save last message for editing
+  var lastpost = null;  // save last message for editing
 
-	getParams('?'+document.cookie);	// get work from cookie
+	function getParams(p) { // read from URL parameters or cookie
+		var params = {}; // parameters
+		p.replace(/[?&;]\s?([^=&;]+)=([^&;]*)/gi,
+		function(m,key,value) { params[key] = value; });
+
+		if (params.id) { id = params.id; }
+		if (params.modifierkey) { modifierkey = +params.modifierkey; }
+		if (params.enterkey) { enterkey = +params.enterkey; }
+		if (params.work) { work = params.work === 'true'; }
+		if (params.email) { email = params.email; }
+		if (params.avatar) { avatar = params.avatar; }
+	}
+
+  getParams('?'+document.cookie);  // get work from cookie
 
   // get ID from URL
   if (window.location.search.search(/^\?[\w% ]{1,}$/) === 0) {
@@ -45,11 +59,12 @@
 
   $(document).ready(function() {
 
-		$('#logo').toggleClass('show', !work);
+    $('#logo').toggleClass('show', !work);
 
     // determine user id
+		var t;
     while (id.search(/^[\w ]{1,}$/) !== 0) {
-      var t = $.trim(prompt('Enter your ID (containing A-Z a-z 0-9 _ space):', id));
+      t = $.trim(prompt('Enter your ID (containing A-Z a-z 0-9 _ space):', id));
       if (t.length === 0) {
         t = 'INVALID';
         window.location.href = 'http://jrslims.com';
@@ -87,20 +102,20 @@
           myuserdb.once('value', startup);
           return;
         }
-        me = {	// default values for new user
-					lastseen: 0,
-					avatar: 'avatars/newuser.png',
-					modifierkey: modifierkey,	// shift key
-					enterkey: enterkey	// return key
-				};
+        me = {  // default values for new user
+          lastseen: 0,
+          avatar: 'avatars/newuser.png',
+          modifierkey: modifierkey,  // shift key
+          enterkey: enterkey  // return key
+        };
         myuserdb.set(me); // inititalize
         $('#user, #logo').click();
       }
       if (me.lastseen !== undefined) { lastseen = me.lastseen; }
       if (me.email !== undefined) { email = me.email; }
       if (me.avatar !== undefined) { avatar = me.avatar; }
-			if (me.modifierkey !== undefined) { modifierkey = +me.modifierkey; }
-			if (me.enterkey !== undefined) { enterkey = +me.enterkey; }
+      if (me.modifierkey !== undefined) { modifierkey = +me.modifierkey; }
+      if (me.enterkey !== undefined) { enterkey = +me.enterkey; }
 
       if (paramOverride) { getParams(window.location.href); }
 
@@ -119,7 +134,7 @@
       }, 10);
     } // end startup (get user profile)
 
-		// add messages to page
+    // add messages to page
     function addmessages(snap) {
       var message = snap.val();
       var mstamp = message.stamp;
@@ -132,22 +147,22 @@
       if (message.avatar) {
         $('<img/>', { 'class': 'avatar'+(work ? '' : ' show'), src: message.avatar }).appendTo(newdiv);
       }
-			newdiv.append('<strong>'+(message.email ?
-					'<a href="mailto:'+message.email+'">'+message.name+'</a>' :
-					message.name)+'</strong>').
-				append(message.host ? ' ('+message.host+')' : '').
+      newdiv.append('<strong>'+(message.email ?
+          '<a href="mailto:'+message.email+'">'+message.name+'</a>' :
+          message.name)+'</strong>').
+        append(message.host ? ' ('+message.host+')' : '').
         append($('<div/>', {'class': 'msgtime'}).data('mts', mstamp).
         html('<time>'+deltaTime(now - mstamp)+' ago</time>')).
         append($('<div/>', { 'class': 'msgbody' }).html(message.text));
-			newdiv.find('.msgbody iframe').wrap('<div class="uservid" />');
-			newdiv.find('.msgbody img:not([src^="emoticons/"])').wrap('<div class="userimg" />');
-			newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
-			$('#messagesDiv').prepend(newdiv);
-			if (mstamp <= lastseen) {
-				newdiv.addClass('read');
+      newdiv.find('.msgbody iframe').wrap('<div class="uservid" />');
+      newdiv.find('.msgbody img:not([src^="emoticons/"])').wrap('<div class="userimg" />');
+      newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
+      $('#messagesDiv').prepend(newdiv);
+      if (mstamp <= lastseen) {
+        newdiv.addClass('read');
       } else {
-				newdiv.hide().slideDown('slow');	// slow reveal
-			}
+        newdiv.hide().slideDown('slow');  // slow reveal
+      }
       messageBodies[snap.name()] = newdiv.html();  // keep track of messages
     } // end add messages
 
@@ -236,8 +251,8 @@
         if (avatar) { post.avatar = avatar; }
         if (files.length > 0) { post.files = files.join("\n"); }
         lastpost = msgdb.push();
-				lastpost.setWithPriority(post, Firebase.ServerValue.TIMESTAMP);
-				$('#delmsg').css('display', 'inline-block');
+        lastpost.setWithPriority(post, Firebase.ServerValue.TIMESTAMP);
+        $('#delmsg').css('display', 'inline-block');
         $('#messageInput').val('').css('height', messageInputHeight); // clear message text
         files = [];
         $('.qq-upload-list').empty(); // clear list of uploaded files
@@ -278,16 +293,16 @@
 
     }); // end click on kibbitz button (post new message)
 
-		// delete / edit message
-		$('#delmsg').click( function() {
-			if (lastpost === null) { return; }
-			var name = lastpost.name();	// get generated name of last post
-			var msgbody = $('#'+name+' .msgbody').html();
-			$('#messageInput').val(msgbody);
-			$('#delmsg').css('display', 'none');
-			lastpost.remove();
-			lastpost = null;
-		});
+    // delete / edit message
+    $('#delmsg').click( function() {
+      if (lastpost === null) { return; }
+      var name = lastpost.name();  // get generated name of last post
+      var msgbody = $('#'+name+' .msgbody').html();
+      $('#messageInput').val(msgbody);
+      $('#delmsg').css('display', 'none');
+      lastpost.remove();
+      lastpost = null;
+    });
 
     // formatting buttons
     $('#formatbuttons').on('click', 'span.button', function(e) {
@@ -315,12 +330,12 @@
       uptime();
     });
 
-		myuserdb.child('lastseen').on('value', function(snap) {
-			var ls = snap.val();
-			$('.msgdiv:not(.read)').filter(function(i, el) {
-					return $(this).find('.msgtime').data('mts') <= ls;
-				}).addClass('read');
-		});
+    myuserdb.child('lastseen').on('value', function(snap) {
+      var ls = snap.val();
+      $('.msgdiv:not(.read)').filter(function(/* i, el */) {
+          return $(this).find('.msgtime').data('mts') <= ls;
+        }).addClass('read');
+    });
 
     // drag and drop file uploader
     $('#fine-uploader').fineUploader({
@@ -350,7 +365,7 @@
       $(document).off('click', cancelemo);
       $('#emoticons img').off('click', emo);
       $('#emoticons').hide();
-			$('#formatbuttons').show();
+      $('#formatbuttons').show();
       return false;
     }
 
@@ -358,11 +373,11 @@
       $(document).off('click', cancelemo);
       $('#emoticons img').off('click', emo);
       $('#emoticons').hide();
-			$('#formatbuttons').show();
+      $('#formatbuttons').show();
     }
 
     $('#emobutton').on('click', function() {
-			$('#formatbuttons').hide();
+      $('#formatbuttons').hide();
       $('#emoticons').show();
       $('#emoticons img').on('click', emo);
       $(document).on('click', cancelemo);
@@ -381,7 +396,7 @@
       $(document).off('click', cancelspc);
       $('#specialchars span').off('click', spc);
       $('#specialchars').hide();
-			$('#formatbuttons').show();
+      $('#formatbuttons').show();
       return false;
     }
 
@@ -389,11 +404,11 @@
       $('#specialchars span').off('click', spc);
       $(document).off('click', cancelspc);
       $('#specialchars').hide();
-			$('#formatbuttons').show();
+      $('#formatbuttons').show();
     }
 
     $('#spcbutton').on('click', function() {
-			$('#formatbuttons').hide();
+      $('#formatbuttons').hide();
       $('#specialchars').show();
       $('#specialchars span').on('click', spc);
       $(document).on('click', cancelspc);
@@ -407,33 +422,33 @@
           '</td></tr><tr><td colspan="2" style="font-weight:normal">('+client+
           ')</td></tr><tr><td style="text-align:right">Work:</td><td><input id="work" type="checkbox" '+(work ? 'checked="checked" ' : '')+
           ' /> (on this device only)</td></tr><tr><td style="text-align:right">Submit:</td><td><select id="modifierkey" value="'+
-					modifierkey+'"><option value="16">shift</option><option value="17">ctrl</option><option value="27">esc</option>'+
-					'<option value="-1">(none)</option></select> <select id="enterkey" value="'+
-					enterkey+'"><option value="13">return</option><option value="38">&uarr;</option><option value="39">&rarr;</option>'+
-					'<option value="40">&darr;</option><option value="35">end</option><option value="-1">(none)</option></select></td></tr>'+
-					'<tr><td style="text-align:right">Email:</td><td><input id="email" type="text" value="'+
+          modifierkey+'"><option value="16">shift</option><option value="17">ctrl</option><option value="27">esc</option>'+
+          '<option value="-1">(none)</option></select> <select id="enterkey" value="'+
+          enterkey+'"><option value="13">return</option><option value="38">&uarr;</option><option value="39">&rarr;</option>'+
+          '<option value="40">&darr;</option><option value="35">end</option><option value="-1">(none)</option></select></td></tr>'+
+          '<tr><td style="text-align:right">Email:</td><td><input id="email" type="text" value="'+
           email+'" /></td></tr><tr><td style="text-align:right">Avatar:</td><td><img id="myavatar" src="'+
           avatar+'" width="39" height="50" /> <input id="avatarurl" type="text" value="'+
           avatar+'" /></td></tr></table><div id="cloakroom"></div>';
       $('#profile').show().on('click', 'img.close', cancelprofile).html(table);
       $('#work').change(function() {
         work = $(this).prop('checked');
-				$('#logo, div.msgdiv img.avatar').toggleClass('show', !work);
-				$('div.userimg, div.uservid').toggleClass('worksmall', work);
-				setCookie('work', work ? 'true' : 'false');
+        $('#logo, div.msgdiv img.avatar').toggleClass('show', !work);
+        $('div.userimg, div.uservid').toggleClass('worksmall', work);
+        setCookie('work', work ? 'true' : 'false');
       });
       $('#email').change(function() {
         email = $.trim($(this).val());
         setTimeout(function() { myuserdb.update({ email: email }); }, 10);
       });
-			$('#modifierkey').val(modifierkey).change(function() {
-				modifierkey = +$.trim($(this).val());
-				setTimeout(function() { myuserdb.update({ modifierkey: modifierkey }); }, 10);
-			});
-			$('#enterkey').val(enterkey).change(function() {
-				enterkey = +$.trim($(this).val());
-				setTimeout(function() { myuserdb.update({ enterkey: enterkey }); }, 10);
-			});
+      $('#modifierkey').val(modifierkey).change(function() {
+        modifierkey = +$.trim($(this).val());
+        setTimeout(function() { myuserdb.update({ modifierkey: modifierkey }); }, 10);
+      });
+      $('#enterkey').val(enterkey).change(function() {
+        enterkey = +$.trim($(this).val());
+        setTimeout(function() { myuserdb.update({ enterkey: enterkey }); }, 10);
+      });
       $('#myavatar').parent().on('click', function() {
         if ($('#cloakroom img').length > 0) { return; }
         $.each(slimages, function(k, v) {
@@ -582,25 +597,12 @@
     // console.log('num messages:', $('.msgtime').length, Object.keys(messageBodies).length);
   }
 
-  function getParams(p) { // read from URL parameters or cookie
-    var params = {}; // parameters
-    p.replace(/[?&;]\s?([^=&;]+)=([^&;]*)/gi,
-        function(m,key,value) { params[key] = value; });
 
-		console.log(params);
-    if (params.id) { id = params.id; }
-		if (params.modifierkey) { modifierkey = +params.modifierkey; }
-		if (params.enterkey) { enterkey = +params.enterkey; }
-		if (params.work) { work = params.work === 'true'; }
-		if (params.email) { email = params.email; }
-    if (params.avatar) { avatar = params.avatar; }
+  function setCookie(name, value) {
+    var date = new Date();
+    date.setTime(date.getTime() + 730*86400000); // 2 years
+    document.cookie = name+'='+value+'; expires='+date.toGMTString()+'; path='+window.location.pathname;
   }
-
-	function setCookie(name, value) {
-		var date = new Date();
-		date.setTime(date.getTime() + 730*86400000); // 2 years
-		document.cookie = name+'='+value+'; expires='+date.toGMTString()+'; path='+window.location.pathname;
-	}
 
   // functions for manipulating and formatting messages
   function insert(str) {  // insert str into message
