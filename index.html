@@ -18,6 +18,7 @@ html {
 body {
 	background: white url('img/back.gif');
 	margin: 7px 18px 7px 7px;
+	font-size: 16px;
 }
 a:link { color: black; }
 a:visited { color: #400040;}
@@ -88,25 +89,44 @@ span.button {
 	padding: 0px 4px;
 	text-align: center;
 	cursor: pointer;
-	height: 18px;
+	height: 1.1em;
 	vertical-align: top;
 }
 span.small {
-	width: 12px;
+	width: 0.7em;
 }
-span.button[title="Kibbitz"] { font-family: sans-serif; font-weight: bold; line-height: 18px; }
+span.button[title="Kibbitz"] { font-family: sans-serif; font-weight: bold; height: 1.1em; }
 .qq-upload-button-hover{ background:white; }
-span.button[title="File Upload"] { font-family: sans-serif; font-size: 13px; line-height: 18px; }
-span.button[title="Link"] { text-decoration:underline; font-family: sans-serif; font-size: 13px; line-height: 18px; }
-span.button[title="Image"] { font-family: sans-serif; font-size: 13px; line-height: 18px; }
+span.button[title="Link"] {
+	text-decoration:underline;
+	font-family: sans-serif;
+	font-size: 0.85em;
+	padding-top: 0.1em;
+	height: 1.29em;
+}
+span.button[title="Image"] {
+	font-family: sans-serif;
+	font-size: 0.85em;
+	padding-top: 0.1em;
+	height: 1.29em;
+}
+span.button[title="File Upload"] {
+	font-family: sans-serif;
+	font-size: 0.85em;
+	padding-top: 0.1em;
+	height: 1.29em;
+}
 span.button[title="Bold"] { font-weight: bold; }
 span.button[title="Italic"] { font-style: italic; }
 span.button[title="Color"] { color: red; font-family: sans-serif; }
 span.button[title="Size"] { font-family: sans-serif; }
-span.button[title="Block Quote"] { font-weight: bold; }
+span.button[title="Block Quote"] { font-weight: bold; font-size: 1.3em; height: 0.85em; width: 0.5em; }
 span#emoticons, span#specialchars {
 	display: none;
 	float: right;
+}
+#emobutton {
+	height: 1.2em;
 }
 span#emoticons img:hover, #emobutton:hover {
 	background-color: black;
@@ -295,7 +315,7 @@ tr.uoffline {
 		<span class="button small" title="Italic">i</span>
 		<span class="button small" title="Color">c</span>
 		<span class="button small" title="Size">S</span>
-		<span class="button small" title="Block Quote">"</span>
+		<span class="button small" title="Block Quote">&ldquo;</span>
 		<span id="spcbutton" class="button small" title="Special Characters">&copy;</span>
 		<img id="emobutton" src="emoticons/blank.gif" title="Emoticons" />
 	</span>
