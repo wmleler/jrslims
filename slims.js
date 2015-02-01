@@ -17,6 +17,7 @@
   var email = '';  // email address
   var avatar = ''; // user icon
   var modifierkey = 16, enterkey = 13;  // submit: shift return
+	var fontsize = 16;	// font size in px
 
   // global variables
   var me; // user object
@@ -41,6 +42,7 @@
 		if (params.modifierkey) { modifierkey = +params.modifierkey; }
 		if (params.enterkey) { enterkey = +params.enterkey; }
 		if (params.work) { work = params.work === 'true'; }
+		if (params.fontsize) { fontsize = +params.fontsize; }
 		if (params.email) { email = params.email; }
 		if (params.avatar) { avatar = params.avatar; }
 	}
@@ -417,17 +419,18 @@
 
     // Profile
     $('#user').click(function() {
-      var table = '<img class="close" src="img/close_icon.gif" /><img id="Pimg" src="img/profile.png" width="106" height="148" />'+
+      var table = '<img class="close" src="img/close_icon.gif" />'+
           '<table><tr><td></td></tr><tr><td id="Ptext" colspan="2">rofile for&nbsp;'+id+
-          '</td></tr><tr><td colspan="2" style="font-weight:normal">('+client+
-          ')</td></tr><tr><td style="text-align:right">Work:</td><td><input id="work" type="checkbox" '+(work ? 'checked="checked" ' : '')+
-          ' /> (on this device only)</td></tr><tr><td style="text-align:right">Submit:</td><td><select id="modifierkey" value="'+
+          '</td></tr><tr><td colspan="2" style="font-weight:normal">&nbsp;('+client+
+          ')</td></tr><tr><td style="text-align:right">work:</td><td><input id="work" type="checkbox" '+(work ? 'checked="checked" ' : '')+
+          ' /> (only on this device)</td></tr><tr><td style="text-align:right">fontsize:</td><td><input id="fontsize" type="range" value="'+
+					fontsize+'" min="12" max="20" step="0.5" /></td></tr><tr><td style="text-align:right">submit:</td><td><select id="modifierkey" value="'+
           modifierkey+'"><option value="16">shift</option><option value="17">ctrl</option><option value="27">esc</option>'+
           '<option value="-1">(none)</option></select> <select id="enterkey" value="'+
           enterkey+'"><option value="13">return</option><option value="38">&uarr;</option><option value="39">&rarr;</option>'+
           '<option value="40">&darr;</option><option value="35">end</option><option value="-1">(none)</option></select></td></tr>'+
-          '<tr><td style="text-align:right">Email:</td><td><input id="email" type="text" value="'+
-          email+'" /></td></tr><tr><td style="text-align:right">Avatar:</td><td><img id="myavatar" src="'+
+          '<tr><td style="text-align:right">email:</td><td><input id="email" type="text" value="'+
+          email+'" /></td></tr><tr><td style="text-align:right">avatar:</td><td><img id="myavatar" src="'+
           avatar+'" width="39" height="50" /> <input id="avatarurl" type="text" value="'+
           avatar+'" /></td></tr></table><div id="cloakroom"></div>';
       $('#profile').show().on('click', 'img.close', cancelprofile).html(table);
@@ -437,6 +440,11 @@
         $('div.userimg, div.uservid').toggleClass('worksmall', work);
         setCookie('work', work ? 'true' : 'false');
       });
+			$('#fontsize').change(function() {
+				fontsize = +$.trim($(this).val());
+				$('body').css('font-size', fontsize);
+				setCookie('fontsize', fontsize);
+			});
       $('#email').change(function() {
         email = $.trim($(this).val());
         setTimeout(function() { myuserdb.update({ email: email }); }, 10);

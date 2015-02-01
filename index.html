@@ -13,8 +13,8 @@
 <link href="fine-uploader-5.1.3.min.css" rel="stylesheet" />
 <style type="text/css">
 html,body{margin:0;padding:0;}
-h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,cite,code,del,dfn
-em,img,q,s,samp,small,strike,strong,sub,sup,tt,var,dd,dl,dt,li,ol,ul
+h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,cite,code,del,dfn,
+em,img,q,s,samp,small,strike,strong,sub,sup,tt,var,dd,dl,dt,li,ol,ul,
 fieldset,form,label,legend,button,table,caption,tbody,tfoot,thead,tr,th,td{
 	margin:0;padding:0;border:0;font-weight:normal;font-style:normal;
 	font-size:100%;line-height:1;font-family:inherit;}
@@ -178,8 +178,9 @@ span.button:active {
 blockquote {
   margin: 5px 0;
   padding: 0px 30px;
-  background-image: url(img/blockquote.png);
+  background-image: url(img/blockquoted.png);
   background-repeat: no-repeat;
+	background-position: 0 3px;
 }
 div.userimg img {
 	max-width: 95%;
@@ -221,11 +222,13 @@ img.close {
 	z-index: 1000;
 }
 #profile {
-	left: 1em;
+	left: 0.45em;
+	background-image: url(img/profile.png);
+	background-repeat: no-repeat;
+	background-position: 0 3px;
 }
-#Pimg {
-	float: left;
-	margin-top: 0.5em;
+#profile table {
+	margin-left: 102px;
 }
 #Ptext {
 	font-weight: bold;
@@ -234,27 +237,37 @@ img.close {
 	white-space: nowrap;
 }
 #shame {
-	right: 1em;
+	right: 1.3em;
+	padding: 0 4px 4px 6px;
 }
 #hos {
 	font-weight: bold;
 	font-size: 20px;
 	padding-left: 1em;
 }
-tr.uonline {
+#shame tr.uonline {
 	background-color: #ff8;
 }
-tr.uoffline {
+#profile td, #shame td {
+	padding: 0.3em 0.1em 0 0;
 }
-#shame table td:first-child, #profile table td:first-child {
+#profile table td:first-child, #shame table td:first-child {
 	font-weight: bold;
+	padding-right: 5px;
+}
+#fontsize {
+	width: 14em;
 }
 #email {
-	width: 15em;
+	width: 14.3em;
+	font-family: serif;
 }
 #myavatar {
 	border: solid black 1px;
 	vertical-align: middle;
+}
+#avatarurl, #profile option {
+	font-family: serif;
 }
 #cloakroom {
 	clear: both;
