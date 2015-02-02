@@ -31,6 +31,7 @@
   var messageInputHeight; // height of messageInput textarea
   var paramOverride = false;
   var client = ''; // user's domain or IP address
+  var lastAnimation = null; // last message animating open
   var lastpost = null;  // save last message for editing
 
 	function getParams(p) { // read from URL parameters or cookie
@@ -162,8 +163,14 @@
       $('#messagesDiv').prepend(newdiv);
       if (mstamp <= lastseen) {
         newdiv.addClass('read');
-      } else {
-        newdiv.hide().slideDown('slow');  // slow reveal
+      } else {  // unread message, animate
+        if (lastAnimation !== null) {
+          lastAnimation.finish(); // finish animation before starting another one
+        }
+        newdiv.hide().slideDown('slow', function() {
+          lastAnimation = null;
+        });  // slow reveal
+        lastAnimation = newdiv;
       }
       messageBodies[snap.name()] = newdiv.html();  // keep track of messages
     } // end add messages
