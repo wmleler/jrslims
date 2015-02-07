@@ -63,6 +63,7 @@
   $(document).ready(function() {
 
     $('#logo').toggleClass('show', !work);
+    $('body').css('font-size', fontsize);
 
     // determine user id
 		var t;
@@ -167,7 +168,7 @@
         if (lastAnimation !== null) {
           lastAnimation.finish(); // finish animation before starting another one
         }
-        newdiv.hide().slideDown('slow', function() {
+        newdiv.hide().slideDown(500, function() {
           lastAnimation = null;
         });  // slow reveal
         lastAnimation = newdiv;
@@ -431,7 +432,8 @@
           '</td></tr><tr><td colspan="2" style="font-weight:normal">&nbsp;('+client+
           ')</td></tr><tr><td style="text-align:right">work:</td><td><input id="work" type="checkbox" '+(work ? 'checked="checked" ' : '')+
           ' /> (only on this device)</td></tr><tr><td style="text-align:right">fontsize:</td><td><input id="fontsize" type="range" value="'+
-					fontsize+'" min="12" max="20" step="0.5" /></td></tr><tr><td style="text-align:right">submit:</td><td><select id="modifierkey" value="'+
+          fontsize+'" min="12" max="20" step="0.5" /><span id="dispfs">'+fontsize+
+          '</span>px</td></tr><tr><td style="text-align:right">submit:</td><td><select id="modifierkey" value="'+
           modifierkey+'"><option value="16">shift</option><option value="17">ctrl</option><option value="27">esc</option>'+
           '<option value="-1">(none)</option></select> <select id="enterkey" value="'+
           enterkey+'"><option value="13">return</option><option value="38">&uarr;</option><option value="39">&rarr;</option>'+
@@ -448,10 +450,13 @@
         setCookie('work', work ? 'true' : 'false');
       });
 			$('#fontsize').change(function() {
-				fontsize = +$.trim($(this).val());
-				$('body').css('font-size', fontsize);
-				setCookie('fontsize', fontsize);
-			});
+        fontsize = +$.trim($(this).val());
+        $('body').css('font-size', fontsize);
+        $('#dispfs').text(fontsize);
+        setCookie('fontsize', fontsize);
+      }).mousemove(function() {
+        $('#dispfs').text($.trim($(this).val()));
+      });
       $('#email').change(function() {
         email = $.trim($(this).val());
         setTimeout(function() { myuserdb.update({ email: email }); }, 10);

@@ -13,7 +13,7 @@
 <link href="fine-uploader-5.1.3.min.css" rel="stylesheet" />
 <style type="text/css">
 html,body{margin:0;padding:0;}
-h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,cite,code,del,dfn,
+p,blockquote,pre,a,abbr,acronym,address,cite,del,dfn,
 em,img,q,s,samp,small,strike,strong,sub,sup,tt,var,dd,dl,dt,li,ol,ul,
 fieldset,form,label,legend,button,table,caption,tbody,tfoot,thead,tr,th,td{
 	margin:0;padding:0;border:0;font-weight:normal;font-style:normal;
@@ -52,6 +52,7 @@ body {
 	background: white url('img/back.gif');
 	margin: 7px 18px 7px 7px;
 	font-size: 16px;
+	line-height: 1.1em;
 }
 a:link { color: black; }
 a:visited { color: #400040;}
@@ -111,6 +112,7 @@ div.msgdiv img.avatar.show {
 	display: block;
 }
 div.msgdiv div.msgbody {
+	margin-top: 0.4em;
 	clear: both;
 	white-space: pre-line;
 }
@@ -137,7 +139,7 @@ span.button[title="Link"] {
 	font-family: sans-serif;
 	font-size: 0.85em;
 	padding-top: 0.1em;
-	height: 1.29em;
+	height: 1.3em;
 }
 span.button[title="Image"] {
 	font-family: sans-serif;
@@ -155,7 +157,19 @@ span.button[title="Bold"] { font-weight: bold; }
 span.button[title="Italic"] { font-style: italic; }
 span.button[title="Color"] { color: red; font-family: sans-serif; }
 span.button[title="Size"] { font-family: sans-serif; }
-span.button[title="Block Quote"] { font-weight: bold; font-size: 1.3em; height: 0.85em; width: 0.5em; }
+span.button[title="Block Quote"] {
+	height: 0.85em;
+	width: 0.5em;
+	font-size: 1.3em;
+}
+span.button[title="Block Quote"] span {
+	position: relative;
+	top: 4px;
+	left: -2px;
+	font-size: 1.25em;
+	font-weight: bold;
+	pointer-events: none;
+}
 span#emoticons, span#specialchars {
 	display: none;
 	float: right;
@@ -230,6 +244,9 @@ img.close {
 #profile table {
 	margin-left: 102px;
 }
+#profile table tr:nth-of-type(6) {
+	border-top: solid gray 1px;
+}
 #Ptext {
 	font-weight: bold;
 	text-align: left;
@@ -256,7 +273,7 @@ img.close {
 	padding-right: 5px;
 }
 #fontsize {
-	width: 14em;
+	width: 12em;
 }
 #email {
 	width: 14.3em;
@@ -294,6 +311,15 @@ img.close {
 	box-shadow: 5px 5px 3px #666;
 	padding: 15px;
 	z-index: 1000;
+}
+#helpdiv p {
+	margin: 0.4em 0;
+	line-height: 1.2em;
+}
+code {
+	font-family: Courier, sans-serif;
+	padding-left: 2em;
+	display: block;
 }
 @media only screen and (min-width: 320px) and (max-width: 480px) {
 	html {
@@ -363,7 +389,7 @@ img.close {
 		<span class="button small" title="Italic">i</span>
 		<span class="button small" title="Color">c</span>
 		<span class="button small" title="Size">S</span>
-		<span class="button small" title="Block Quote">&ldquo;</span>
+		<span class="button small" title="Block Quote"><span>&ldquo;</span></span>
 		<span id="spcbutton" class="button small" title="Special Characters">&copy;</span>
 		<img id="emobutton" src="emoticons/blank.gif" title="Emoticons" />
 	</span>
@@ -436,15 +462,17 @@ img.close {
 		Yes, you can have a space in your ID; for example: "Jack at Work".</p>
 		<p>The first time you enter Slims, it will open a profile window for you (in addition to this help page).
 		Enter your email address and select an avatar.</p>
-		<p>To make it easier to access Slims, type in the Slims URL into your browser, followed by a question mark and then your ID.
-		For example, if your ID is "jack", use:<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class="scripturl"></span>?jack<br />
-		If your ID contains a space character, use "%20" instead of a space;
-		for example:<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class="scripturl"></span>?Jack%20at%20Work<br />
+		<p>To make it easier to access Slims, type in the Slims URL into your browser,
+		followed by a question mark and then your ID.
+		For example, if your ID is "jack", use:
+		<code><span class="scripturl"></span>?jack</code>
+		If your ID contains a space character, use "%20" instead of a space; for example:
+		<code><span class="scripturl"></span>?Jack%20at%20Work</code>
 		Enter Slims and then set a bookmark on your browser to that page.</p>
 		<p>You can also override your profile in your bookmark.
 		For example, if you want to use a different email address on your work computer, set a bookmark like:
-		<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class="scripturl"></span>?id=jack&email=jack@slims.com
-		<br />You can also override "work", "modifierkey", "enterkey", and "avatar".</p>
+		<code><span class="scripturl"></span>?id=jack&email=jack@slims.com</code>
+		You can also override "work", "fontsize", "modifierkey", "enterkey", and "avatar".</p>
 		<h3>Using Slims</h3>
 		<p>Inside Slims, you can click on the following things:
 			the Jack Rabbit Slims logo to see this help page;
@@ -456,7 +484,8 @@ img.close {
 		<p>The ten formatting buttons are:
 			"link" to create a link; "img" to create an image from a URL;
 			"file" to upload an image or other file from your local computer;
-			"b" to make text bold; "i" to make text italic; "c" to change the color of text; "S" to change the size of text;
+			"b" to make text bold; "i" to make text italic; "c" to change the color of text;
+			"S" to change the size of text; "<font size="+2">&ldquo;</font>" for a blockquote;
 			"&copy;" to insert special characters; and the yellow circle to insert an emoticon.
 			You can also drag and drop files (including images) onto Slims to upload them from your local computer.</p>
 		<p>Click on any message to mark that you have seen it (and all messages below it).
