@@ -70,8 +70,8 @@
     while (id.search(/^[\w ]{1,}$/) !== 0) {
       t = $.trim(prompt('Enter your ID (containing A-Z a-z 0-9 _ space):', id));
       if (t.length === 0) {
-        t = 'INVALID';
         window.location.href = 'http://jrslims.com';
+        return;
       }
       id = t;
     }
@@ -159,7 +159,10 @@
         html('<time>'+deltaTime(now - mstamp)+' ago</time>')).
         append($('<div/>', { 'class': 'msgbody' }).html(message.text));
       newdiv.find('.msgbody iframe').wrap('<div class="uservid" />');
+      newdiv.find('div.uservid > div.uservid').unwrap();  // get rid of multiple wraps
       newdiv.find('.msgbody img:not([src^="emoticons/"])').wrap('<div class="userimg" />');
+      newdiv.find('div.userimg > div.userimg').unwrap();  // get rid of multiple wraps
+
       newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
       $('#messagesDiv').prepend(newdiv);
       if (mstamp <= lastseen) {
@@ -215,6 +218,7 @@
           return false;
         }
       }
+      modifierdown = false;
       var el = e.delegateTarget;
       if (el.scrollHeight > el.clientHeight) { el.style.height = el.scrollHeight+'px'; }
     }).css('height');
@@ -237,19 +241,8 @@
             mess += ' <a href="'+v+'" target="_blank">'+v+'</a>';
           });
         } else {  // linkify message
-          // var $message = $('<div/>').html(mess);
-          // $message.find('*').contents().filter(function() {
-          //   return this.nodeType === Node.TEXT_NODE && !/^\s*$/.test(this.nodeValue);
-          // }).each(function(i, v) {
-          //   var result = $(this).text().replace(/\r\n|[\n\r\x85]/g, '<br />'). // newlines to breaks
-          //       replace(urlRegex, '<a href="$&" target="_blank">$&</a>').
-          //       replace(mailRegex, '<a href="mailto:$&">$&</a>');
-          //   this.innerHtml = result;
-          // });
-          // mess = $message.html();
           mess = mess.replace(urlRegex, '<a href="$&" target="_blank">$&</a>'). // URL to link
               replace(mailRegex, '<a href="mailto:$&">$&</a>'); // mail address to link
-              // replace(/\r\n|[\n\r\x85]/g, '<br />');  // newlines to breaks
         }
         var post = {
           name: name,
@@ -303,7 +296,7 @@
 
     }); // end click on kibbitz button (post new message)
 
-    // delete / edit message
+    // delete / edit message (scissors)
     $('#delmsg').click( function() {
       if (lastpost === null) { return; }
       var name = lastpost.name();  // get generated name of last post
