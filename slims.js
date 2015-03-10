@@ -251,6 +251,7 @@
         };
         if (email) { post.email = email; }
         if (client) { post.host = client; }
+        // post.host = 'proxyd5.ihc.com';
         if (avatar) { post.avatar = avatar; }
         if (files.length > 0) { post.files = files.join("\n"); }
         lastpost = msgdb.push();
@@ -712,7 +713,7 @@
   // regular expressions for finding URLs and Mail addresses
   // var urlRegex = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/i;
   // var mailRegex = /\w+@[a-zA-Z_]+?(?:\.[a-zA-Z]{2,6})+/gim;
-  var urlRegex = /^[ \t]*(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
+  var urlRegex = /^[ \t]*(\b(https?|ftp):\/\/[-A-Z0-9+&@#\*\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i;
   var mailRegex = /^[ \t]*\w+@[a-zA-Z_]+?(?:\.[a-zA-Z]{2,6})+/i;
 
   var slimages = {
