@@ -28,11 +28,12 @@
   var modifierdown = false;  // is shift key down?
   var shame = []; // hall of shame users
   var timeout;  // time last message arrived
-  var messageInputHeight; // height of messageInput textarea
+  var messageInputHeight; // default height of messageInput textarea
   var paramOverride = false;
   var client = ''; // user's domain or IP address
   var lastAnimation = null; // last message animating open
   var lastpost = null;  // save last message for editing
+  var serverOffset; // milliseconds of clock skew
 
 	function getParams(p) { // read from URL parameters or cookie
 		var params = {}; // parameters
@@ -89,6 +90,13 @@
     var myuserdb = usersdb.child(id);  // my profile
 
     myuserdb.once('value', startup);  // firebase startup
+
+    var offsetRef = firebasedb.child('.info/serverTimeOffset');
+
+    offsetRef.on('value', function(snap) {
+      serverOffset = snap.val();
+      if (console && console.log) { console.log('server offset', serverOffset); }
+    });
 
     // get user profile and start messages
     function startup(snap) {
@@ -186,7 +194,7 @@
         delete messageBodies[name];
       }
       $('#'+name).remove();  // remove message from DOM
-    }
+    } // end dropmessages
 
     function presencechange(snap) { // manage whether I am connected or not, and timestamp when I disconnect
       if (snap.val() === true) {  // online
@@ -201,7 +209,7 @@
         $('#kibbitz').css('opacity', 0.3);  // dim kibbitz button
         $('#usertime').text('Offline').css('color','red');
       }
-    }
+    } // end presencechange
 
     // grow textarea automatically and handle keyboard Submit
     messageInputHeight = $('#messageInput').on('keyup keydown', function(e) {
@@ -219,13 +227,31 @@
         }
       }
       modifierdown = false;
-      var el = e.delegateTarget;
-      if (el.scrollHeight > el.clientHeight) { el.style.height = el.scrollHeight+'px'; }
-    }).css('height');
+      adjustHeight(e.delegateTarget);
+    }).on('paste', function(e) {
+      adjustHeight(e.delegateTarget);
+    }).
+    css('height');
+
+    function adjustHeight(el) { // adjust height of input text area
+      if (el.scrollHeight > el.clientHeight) {
+        el.style.height = el.scrollHeight+'px';
+      }
+    }
 
     function imagebig(e) {  // in work mode, toggle image size
       $(e.target).toggleClass('worksmall');
       return false;
+    }
+
+    function complete(v) {
+      if (v === null) { // success
+        $('#delmsg').css('display', 'inline-block');
+        $('#messageInput').val('').css('height', messageInputHeight); // clear message text
+        files = [];
+        $('.qq-upload-list').empty(); // clear list of uploaded files
+        $('.qq-upload-drop-area').hide(); // hide drop area
+      }
     }
 
     // post new message and delete old messages
@@ -251,16 +277,16 @@
         };
         if (email) { post.email = email; }
         if (client) { post.host = client; }
-        // post.host = 'proxyd5.ihc.com';
         if (avatar) { post.avatar = avatar; }
         if (files.length > 0) { post.files = files.join("\n"); }
-        lastpost = msgdb.push();
-        lastpost.setWithPriority(post, Firebase.ServerValue.TIMESTAMP);
-        $('#delmsg').css('display', 'inline-block');
-        $('#messageInput').val('').css('height', messageInputHeight); // clear message text
-        files = [];
-        $('.qq-upload-list').empty(); // clear list of uploaded files
-        $('.qq-upload-drop-area').hide(); // hide drop area
+        lastpost = msgdb.push(post, complete);  // post
+        lastpost.setPriority(Firebase.ServerValue.TIMESTAMP);
+        // lastpost.setWithPriority(post, Firebase.ServerValue.TIMESTAMP);
+        // $('#delmsg').css('display', 'inline-block');
+        // $('#messageInput').val('').css('height', messageInputHeight); // clear message text
+        // files = [];
+        // $('.qq-upload-list').empty(); // clear list of uploaded files
+        // $('.qq-upload-drop-area').hide(); // hide drop area
       }
 
       uptime(); // update times
@@ -302,7 +328,7 @@
       if (lastpost === null) { return; }
       var name = lastpost.name();  // get generated name of last post
       var msgbody = $('#'+name+' .msgbody').html();
-      $('#messageInput').val(msgbody);
+      adjustHeight(($('#messageInput').val(msgbody))[0]);
       $('#delmsg').css('display', 'none');
       lastpost.remove();
       lastpost = null;
@@ -334,10 +360,11 @@
       uptime();
     });
 
+    // receive message read from database and mark messages
     myuserdb.child('lastseen').on('value', function(snap) {
       var ls = snap.val();
       $('.msgdiv:not(.read)').filter(function(/* i, el */) {
-          return $(this).find('.msgtime').data('mts') <= ls;
+          return $(this).find('.msgtime').data('mts') + serverOffset <= ls;
         }).addClass('read');
     });
 
