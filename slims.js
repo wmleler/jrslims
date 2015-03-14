@@ -21,7 +21,7 @@
 
   // global variables
   var me; // user object
-  var lastseen = "0"; // last post I've marked as read
+  var lastseen = null; // last post I've marked as read
   var online = true;  // am I connected to Firebase?
   var messageBodies = {};  // message bodies, keyed by Firebase name
   var files = []; // uploaded files for a message
@@ -33,7 +33,6 @@
   var client = ''; // user's domain or IP address
   var lastAnimation = null; // last message animating open
   var lastpost = null;  // save last message for editing
-  var serverOffset; // milliseconds of clock skew
 
 	function getParams(p) { // read from URL parameters or cookie
 		var params = {}; // parameters
@@ -91,13 +90,6 @@
 
     myuserdb.once('value', startup);  // firebase startup
 
-    var offsetRef = firebasedb.child('.info/serverTimeOffset');
-
-    offsetRef.on('value', function(snap) {
-      serverOffset = snap.val();
-      if (console && console.log) { console.log('server offset', serverOffset); }
-    });
-
     // get user profile and start messages
     function startup(snap) {
       me = snap.val();  // user profile
@@ -115,7 +107,7 @@
           return;
         }
         me = {  // default values for new user
-          lastseen: "0",
+          lastseen: null,
           avatar: 'avatars/newuser.png',
           modifierkey: modifierkey,  // shift key
           enterkey: enterkey  // return key
