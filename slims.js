@@ -21,7 +21,7 @@
 
   // global variables
   var me; // user object
-  var lastseen = 0; // last post I've marked
+  var lastseen = "0"; // last post I've marked as read
   var online = true;  // am I connected to Firebase?
   var messageBodies = {};  // message bodies, keyed by Firebase name
   var files = []; // uploaded files for a message
@@ -115,7 +115,7 @@
           return;
         }
         me = {  // default values for new user
-          lastseen: 0,
+          lastseen: "0",
           avatar: 'avatars/newuser.png',
           modifierkey: modifierkey,  // shift key
           enterkey: enterkey  // return key
@@ -173,7 +173,8 @@
 
       newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
       $('#messagesDiv').prepend(newdiv);
-      if (mstamp <= lastseen) {
+      // if (mstamp <= lastseen) {
+      if (snap.name() <= lastseen) {
         newdiv.addClass('read');
       } else {  // unread message, animate
         if (lastAnimation !== null) {
@@ -351,21 +352,31 @@
 
     // click to mark post as read
     $('#messagesDiv').on('click', '.msgdiv', function() {
-      var $this = $(this);
-      var mts = $this.find('.msgtime').data('mts');
-      if (mts > lastseen) {
-        lastseen = mts;
-        myuserdb.update({'lastseen': lastseen}); // save time of last seen
+      if (!isNaN(lastseen) || this.id > lastseen) {
+        lastseen = this.id;
+        myuserdb.update({'lastseen': lastseen}); // save id of last seen
       }
+
+      // var $this = $(this);
+      // var mts = $this.find('.msgtime').data('mts');
+      // if (mts > lastseen) {
+      //   lastseen = mts;
+      //   myuserdb.update({'lastseen': lastseen}); // save time of last seen
+      // }
       uptime();
     });
 
     // receive message read from database and mark messages
     myuserdb.child('lastseen').on('value', function(snap) {
-      var ls = snap.val();
+      var lsid = snap.val();
       $('.msgdiv:not(.read)').filter(function(/* i, el */) {
-          return $(this).find('.msgtime').data('mts') + serverOffset <= ls;
-        }).addClass('read');
+        return this.id <= lsid;
+      }).addClass('read');
+
+      // var ls = snap.val();
+      // $('.msgdiv:not(.read)').filter(function(/* i, el */) {
+      //     return $(this).find('.msgtime').data('mts') + serverOffset <= ls;
+      //   }).addClass('read');
     });
 
     // drag and drop file uploader
