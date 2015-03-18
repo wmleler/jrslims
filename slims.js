@@ -147,7 +147,7 @@
         uptime();
         timeout = now;
       }
-      var newdiv = $('<div/>', { id: snap.name(), 'class': 'msgdiv' });
+      var newdiv = $('<div/>', { id: snap.key(), 'class': 'msgdiv' });
       if (message.avatar) {
         $('<img/>', { 'class': 'avatar'+(work ? '' : ' show'), src: message.avatar }).appendTo(newdiv);
       }
@@ -169,7 +169,7 @@
       newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
       $('#messagesDiv').prepend(newdiv);
       // if (mstamp <= lastseen) {
-      if (snap.name() <= lastseen) {
+      if (snap.key() <= lastseen) {
         newdiv.addClass('read');
       } else {  // unread message, animate
         if (lastAnimation !== null) {
@@ -180,11 +180,11 @@
         });  // slow reveal
         lastAnimation = newdiv;
       }
-      messageBodies[snap.name()] = newdiv.html();  // keep track of messages
+      messageBodies[snap.key()] = newdiv.html();  // keep track of messages
     } // end add messages
 
     function dropmessages(snap) { // sync from Firebase
-      var name = snap.name();
+      var name = snap.key();
       var msgbody = messageBodies[name];
       if (msgbody !== undefined) {
         delete messageBodies[name];
@@ -322,7 +322,7 @@
     // delete / edit message (scissors)
     $('#delmsg').click( function() {
       if (lastpost === null) { return; }
-      var name = lastpost.name();  // get generated name of last post
+      var name = lastpost.key();  // get generated name of last post
       var msgbody = $('#'+name+' .msgbody').html();
       adjustHeight(($('#messageInput').val(msgbody))[0]);
       $('#delmsg').css('display', 'none');
@@ -573,7 +573,7 @@
       var lurktime = 0;
       shame = [];
       snap.forEach(function(csnap) {
-        var name = csnap.name();
+        var name = csnap.key();
         var v = csnap.val();
         shame.push({ name: name, online: v.online, offline: v.offline, status: v.status });
         if (name !== id) {  // not me
