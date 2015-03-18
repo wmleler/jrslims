@@ -13,8 +13,8 @@ Uses Fine Uploader to allow drag and drop file uploading. See http://fineuploade
 
 Here are all the files associated with Fine Uploader:
 
-* all.fineuploader-3.8.2.min.js
-* fineuploader-3.8.2.min.css
+* all.fineuploader-x.x.x.min.js
+* fineuploader-x.x.x.min.css
 * endpoint.php
 * handler.php
 * edit.gif

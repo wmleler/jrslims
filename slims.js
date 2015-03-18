@@ -159,10 +159,13 @@
         html('<time>'+deltaTime(now - mstamp)+' ago</time>')).
         append($('<div/>', { 'class': 'msgbody' }).html(message.text));
       newdiv.find('.msgbody iframe').wrap('<div class="uservid" />');
-      newdiv.find('div.uservid > div.uservid').unwrap();  // get rid of multiple wraps
-      newdiv.find('.msgbody img:not([src^="emoticons/"])').wrap('<div class="userimg" />');
-      newdiv.find('div.userimg > div.userimg').unwrap();  // get rid of multiple wraps
-
+      newdiv.find('div.uservid > div.uservid').unwrap();  // get rid of multiple vid wraps
+      // newdiv.find('.msgbody img:not([src^="e/"])').wrap('<div class="userimg" />');
+      newdiv.find('.msgbody img').filter(function() {
+        var src = this.getAttribute('src');
+        return src.match(/^(e|emoticons)\//) === null;
+      }).wrap('<div class="userimg" />');
+      newdiv.find('div.userimg > div.userimg').unwrap();  // get rid of multiple img wraps
       newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
       $('#messagesDiv').prepend(newdiv);
       // if (mstamp <= lastseen) {
@@ -750,16 +753,14 @@
     'El0812.jpg': 'Ellen Hanrahan, El, Red',
     'Jen04.jpg': 'Jennifer K Longstaff, Jenn, jkl',
     'wm.jpg': 'Wm Leler',
-    'wayne.gif': 'Wayne Hale, Zulu',
-    'darroll.jpg': 'Darroll Evans, Buckwheat',
     'lorenboston.jpg': 'Loren Lacy',
     'julie.gif': 'Julie Hardin',
+    'wayne.gif': 'Wayne Hale, Zulu',
+    'darroll.jpg': 'Darroll Evans, Buckwheat',
     'stilts.jpg': 'Dave Hill, Stiltskin',
     'kbh_2008.jpg': 'Kristen (Bendon) Hyman, Babe',
     'pippa.jpg': 'Pippa, Cyndy, dolliedish',
-    'margarita.jpg': 'Margarita Remus, M',
     'leslie11.jpg': 'Leslie, GeecheeGirl',
-    'don.jpg': 'Don Hall',
     'man.jpg': 'The Man',
     'happy.gif': 'Mr. Happy',
     'newuser.png': 'New User'
