@@ -33,6 +33,7 @@
   var client = ''; // user's domain or IP address
   var lastAnimation = null; // last message animating open
   var lastpost = null;  // save last message for editing
+  var imgWidth, imgHeight;  // max size of images
 
 	function getParams(p) { // read from URL parameters or cookie
 		var params = {}; // parameters
@@ -61,6 +62,20 @@
   }
 
   $(document).ready(function() {
+
+    var $win = $(window);
+
+    function resize(e) {
+      console.log('resize', e, $(window).innerWidth());
+      imgWidth = $win.innerWidth() - 40;
+      imgHeight = $win.innerHeight() - 20;
+      $('#messagesDiv div.userimg img').css({
+        maxWidth: imgWidth + 'px',
+        maxHeight: imgHeight + 'px'
+      });
+    }
+
+    $win.on('resize', resize);
 
     $('#logo').toggleClass('show', !work);
     $('body').css('font-size', fontsize);
@@ -164,6 +179,9 @@
       newdiv.find('.msgbody img').filter(function() {
         var src = this.getAttribute('src');
         return src.match(/^(e|emoticons)\//) === null;
+      }).css({
+        maxWidth: imgWidth + 'px',
+        maxHeight: imgHeight + 'px'
       }).wrap('<div class="userimg" />');
       newdiv.find('div.userimg > div.userimg').unwrap();  // get rid of multiple img wraps
       newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);

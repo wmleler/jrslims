@@ -29,7 +29,7 @@ In addition to the files associated with Fine Uploader, here are the rest of the
 * avatars/ -- holds avatar icons for the users
 * client.php -- simple PHP server utility to return the domain and IP address of the client
 * delete.php -- simple PHP server utility to delete files uploaded by Fine Uploader when their messages expire
-* emoticons/ -- holds emoticon images
+* e/ -- holds emoticon images
 * favicon.ico -- jrslims.com bookmark icon
 * files/ -- holds files uploaded by Fine Uploader
 * htaccess -- currently not used
