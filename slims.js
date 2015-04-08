@@ -65,9 +65,8 @@
 
     var $win = $(window);
 
-    function resize(e) {
-      console.log('resize', e, $(window).innerWidth());
-      imgWidth = $win.innerWidth() - 40;
+    function resize() {
+      imgWidth = $win.innerWidth() - 42;
       imgHeight = $win.innerHeight() - 20;
       $('#messagesDiv div.userimg img').css({
         maxWidth: imgWidth + 'px',
@@ -76,6 +75,7 @@
     }
 
     $win.on('resize', resize);
+    resize();
 
     $('#logo').toggleClass('show', !work);
     $('body').css('font-size', fontsize);
