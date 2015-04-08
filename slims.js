@@ -65,7 +65,7 @@
 
     var $win = $(window);
 
-    function resize() {
+    function resize() { // automatic resizing of images to fit window
       imgWidth = $win.innerWidth() - 42;
       imgHeight = $win.innerHeight() - 20;
       $('#messagesDiv div.userimg img').css({
