@@ -254,7 +254,13 @@
     }
 
     function imagebig(e) {  // in work mode, toggle image size
-      $(e.target).toggleClass('worksmall');
+      var $t = $(e.target);
+      if (e.shiftKey) {
+        window.open($t.find(e.target.classList.
+            contains('uservid') ? 'iframe' : 'img').attr('src'));
+        return;
+      }
+      $t.toggleClass('worksmall');
       return false;
     }
 
