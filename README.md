@@ -1,15 +1,17 @@
 Jack Rabbit Slims
 =================
 
-This is the latest incarnation of the oldest running private chat room on the web.
-It is written almost entirely in JavaScript, with just a few small server utilities in PHP.
+This is the latest incarnation of the oldest running private chat room on
+the web. It is written almost entirely in JavaScript, with just a few small
+server utilities in PHP.
 
 The data is stored in Firebase.  See https://www.firebase.com
 
 Fine Uploader
 =============
 
-Uses Fine Uploader to allow drag and drop file uploading. See http://fineuploader.com
+Uses Fine Uploader to allow drag and drop file uploading.
+See http://fineuploader.com
 
 Here are all the files associated with Fine Uploader:
 
@@ -24,11 +26,15 @@ Here are all the files associated with Fine Uploader:
 Files and Directories
 =====================
 
-In addition to the files associated with Fine Uploader, here are the rest of the files and directories and what they do:
+In addition to the files associated with Fine Uploader, here are the rest of
+the files and directories and what they do:
 
 * avatars/ -- holds avatar icons for the users
-* client.php -- simple PHP server utility to return the domain and IP address of the client
-* delete.php -- simple PHP server utility to delete files uploaded by Fine Uploader when their messages expire
+* chunks/ -- holds uploaded chunks for Fine Uploader
+* client.php -- simple PHP server utility to return the domain and
+  IP address of the client
+* delete.php -- simple PHP server utility to delete files uploaded by
+  Fine Uploader when their messages expire
 * e/ -- holds emoticon images
 * favicon.ico -- jrslims.com bookmark icon
 * files/ -- holds files uploaded by Fine Uploader
@@ -38,18 +44,23 @@ In addition to the files associated with Fine Uploader, here are the rest of the
 * README.md -- this file
 * slims.js -- the main guts of slims
 
-The htaccess file was an attempt to make it so that bookmarks like http://foo.com/slims?id=jack could be changed to http://foo.com/slims/jack
+The htaccess file was an attempt to make it so that bookmarks like
+http://foo.com/slims?id=jack could be changed to http://foo.com/slims/jack
 
 Installation
 ============
 
-Simply upload all files onto a web server (you can leave out htaccess for now).  The web server must support PHP.
-Easy peasy!
+Easy peasy! Simply upload all files onto a web server (you can leave out
+htaccess for now). The web server must support PHP.
 
 Configuration
 =============
 
-If you want to add new avatar icons, add the image to the avatars directory and update the slimages object at the end of slims.js
-Avatar icons should be 39 pixels wide by 50 pixels high.  They work best if the contrast is cranked up.
+If you want to add new avatar icons, add the image to the avatars directory
+and update the slimages object at the end of slims.js
 
-If you want to add new emoticons, add them to the emoticons directory and add an image tag to index.html
+Avatar icons should be 39 pixels wide by 50 pixels high.
+They work best if the contrast is cranked up.
+
+If you want to add new emoticons, add them to the emoticons directory and
+add an image tag to index.html
