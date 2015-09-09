@@ -65,6 +65,14 @@
 
     var $win = $(window);
 
+    window.onbeforeunload = function(e) {
+      if(!e) { e = window.event; }  // IE
+      if ($.trim($('#messageInput').val()).length > 0) {
+        e.returnValue = 'You have entered a message in Slims!'
+        return e.returnValue;
+      }
+    }
+
     function resize() { // automatic resizing of images to fit window
       imgWidth = $win.innerWidth() - 42;
       imgHeight = $win.innerHeight() - 20;
