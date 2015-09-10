@@ -65,6 +65,7 @@
 
     var $win = $(window);
 
+    // when leaving, check for orphaned message
     window.onbeforeunload = function(e) {
       if(!e) { e = window.event; }  // IE
       if ($.trim($('#messageInput').val()).length > 0) {
@@ -369,8 +370,16 @@
         case 'File Upload': break;
         case 'Link':        alink(); break;
         case 'Image':       img(); break;
+      }
+    });
+
+    $('#styles').on('click', 'span.button', function(e) {
+      var el = e.target;
+      switch(el.title) {
         case 'Bold':        wrap('<b>','</b>'); break;
         case 'Italic':      wrap('<i>','</i>'); break;
+        case 'Underline':   wrap('<ins>', '</ins>'); break;
+        case 'Delete' :     wrap('<del>', '</del>'); break;
         case 'Color':       wrap('<font color="red">', '</font>'); break;
         case 'Size':        wrap('<font size="+2">', '</font>'); break;
         case 'Block Quote': wrap('<blockquote>', '</blockquote>'); break;
@@ -481,6 +490,29 @@
       $('#specialchars').show();
       $('#specialchars span').on('click', spc);
       $(document).on('click', cancelspc);
+      return false;
+    });
+
+    // style buttons menu
+    function sty(e) {
+      $(document).off('click', cancelsty);
+      $('#styles span').off('click', spc);
+      $('#styles').hide();
+      $('#formatbuttons').show();
+    }
+
+    function cancelsty() {
+      $('#styles span').off('click', sty);
+      $(document).off('click', cancelsty);
+      $('#styles').hide();
+      $('#formatbuttons').show();
+    }
+
+    $('#stylebutton').on('click', function() {
+      $('#formatbuttons').hide();
+      $('#styles').show();
+      $('#styles span').on('click', sty);
+      $(document).on('click', cancelsty);
       return false;
     });
 

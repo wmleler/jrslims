@@ -135,7 +135,10 @@ span.small {
 span.button[title="Kibbitz"] {
 	font-family: sans-serif;
 	font-weight: bold;
-	height: 1.1em;
+	font-size: 1.5em;
+	padding: 6px 0 0 0;
+	height: 1em;
+	width: 1.2em;
 }
 .qq-upload-button-hover{ background:white; }
 span.button[title="Link"] {
@@ -159,6 +162,8 @@ span.button[title="File Upload"] {
 }
 span.button[title="Bold"] { font-weight: bold; }
 span.button[title="Italic"] { font-style: italic; }
+span.button[title="Underline"] { text-decoration: underline; }
+span.button[title="Delete"] { text-decoration: line-through; }
 span.button[title="Color"] { color: red; font-family: sans-serif; }
 span.button[title="Size"] { font-family: sans-serif; }
 span.button[title="Block Quote"] {
@@ -174,12 +179,15 @@ span.button[title="Block Quote"] span {
 	font-weight: bold;
 	pointer-events: none;
 }
-span#emoticons, span#specialchars {
+span#emoticons, span#specialchars, span#styles {
 	display: none;
 	float: right;
 }
-#emobutton {
+#emobutton, #stylebutton, #spcbutton {
 	height: 1.2em;
+}
+#stylebutton {
+	font-weight: bold;
 }
 span#emoticons img:hover, #emobutton:hover {
 	background-color: black;
@@ -189,6 +197,12 @@ span.button:hover {
 }
 span.button:active {
 	background-color: #bbf;
+}
+del {
+	text-decoration: line-through;
+}
+ins {
+	text-decoration: underline;
 }
 #fine-uploader {
 	height: 30px;
@@ -387,18 +401,14 @@ code {
 	<span id="others" class="button"><i>Connecting...</i></span>
 	<div id="shame"></div>
 	<textarea id="messageInput" placeholder="Message" rows="3"></textarea>
-	<span id="kibbitz" class="button small" title="Kibbitz">+</span>
+	<span id="kibbitz" class="button" title="Kibbitz">+</span>
 	<span id="usertime" class="button">Loading...</span>
 	<span id="delmsg" class="button small" title="Delete/edit last post">&#9986</span>
 	<span id="formatbuttons">
 		<span class="button" title="Link">link</span>
 		<span class="button" title="Image">img</span>
 		<span id="fileup" class="button" title="File Upload">&uarr;file</span>
-		<span class="button small" title="Bold">b</span>
-		<span class="button small" title="Italic">i</span>
-		<span class="button small" title="Color">c</span>
-		<span class="button small" title="Size">S</span>
-		<span class="button small" title="Block Quote"><span>&ldquo;</span></span>
+		<span id="stylebutton" class="button small" title="Styles">&Tau;</span>
 		<span id="spcbutton" class="button small" title="Special Characters">&copy;</span>
 		<img id="emobutton" src="e/blank.gif" title="Emoticons" />
 	</span>
@@ -464,6 +474,15 @@ code {
 		<span class="special button">&deg;F</span>
 		<span class="special button">&deg;C</span>
 	</span>
+	<span id="styles">
+		<span class="button small" title="Size">S</span>
+		<span class="button small" title="Color">c</span>
+		<span class="button small" title="Delete">D</span>
+		<span class="button small" title="Underline">u</span>
+		<span class="button small" title="Italic">i</span>
+		<span class="button small" title="Bold">b</span>
+		<span class="button small" title="Block Quote"><span>&ldquo;</span></span>
+	</span>
 	<div style="height: 3px"></div>
 	<div id="fine-uploader"></div>
 	<div id="messagesDiv"></div>
@@ -495,13 +514,18 @@ code {
 			the "+" button to post a message;
 			the current time button to update the current time;
 			and the formatting buttons.</p>
-		<p>The ten formatting buttons are:
+		<p>The formatting buttons are:
 			"link" to create a link; "img" to create an image from a URL;
 			"&uarr;file" to upload an image or other file from your local computer;
-			"b" to make text bold; "i" to make text italic; "c" to change the color of text;
-			"S" to change the size of text; "<font size="+2">&ldquo;</font>" for a blockquote;
+			"T" to style some text;
 			"&copy;" to insert special characters; and the yellow circle to insert an emoticon.
 			You can also drag and drop files (including images) onto Slims to upload them from your local computer.</p>
+		<p>
+			If you click the "T" button, you get several options to style any selected text:
+			"S" to change the size of text; "c" to change the color of text;
+			"D" to Delete (cross out) some text; "u" to underline some text;
+			"i" to make text italic; "b" to make text bold;
+			 "<font size="+2">&ldquo;</font>" for a blockquote.</p>
 		<p>Click on any message to mark that you have seen it (and all messages below it).
 		This is not required, it just helps you remember what messages you have read.</p>
 		<p>In addition to clicking on the "+" button, you can submit a message to Slims by
