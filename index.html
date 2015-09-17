@@ -46,10 +46,13 @@ input[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}
 textarea{overflow:auto;vertical-align:top;}
 html {
 	-webkit-font-smoothing: antialiased; /* maxvoltar.com/archive/-webkit-font-smoothing */
+	/* http://www.paulirish.com/2012/box-sizing-border-box-ftw/ */
+	box-sizing: border-box;
 }
+*, *:after { box-sizing: inherit; }
 body {
 	background: white url('img/back.gif');
-	margin: 7px 18px 7px 7px;
+	margin: 7px 16px 7px 7px;
 	font-size: 16px;
 	line-height: 1.1em;
 	font-family: serif;
@@ -73,7 +76,7 @@ a:visited { color: #400040;}
 }
 #messageInput {
 	display: block;
-	width: 99.5%;
+	width: 100%;
 	clear: both;
 	margin: 3px 0;
 	font-size: 1em;
@@ -82,10 +85,7 @@ a:visited { color: #400040;}
 #usertime {
 	font-style: italic;
 }
-#delmsg {
-	display: none;
-	padding-right: 6px;
-}
+#delmsg { display: none; }
 div.msgdiv {
 	border-top: solid gray 1px;
 	padding: 0.3em 2px 0.2em 5px;
@@ -116,97 +116,80 @@ div.msgdiv div.msgbody {
 	clear: both;
 	white-space: pre-line;
 }
-#formatbuttons {
-	float: right;
-}
+
+#formatbuttons { float: right; }
 span.button {
 	display: inline-block;
 	border: solid black 1px;
 	border-radius: 3px;
-	padding: 0px 4px;
+	padding: 2px 4px 0 4px;
 	text-align: center;
 	cursor: pointer;
-	height: 1.1em;
+	height: 20px;
 	vertical-align: top;
 }
 span.small {
-	width: 0.7em;
+	min-width: 20px;
 }
 span.button[title="Kibbitz"] {
 	font-family: sans-serif;
 	font-weight: bold;
-	font-size: 1.5em;
-	padding: 6px 0 0 0;
-	height: 1em;
-	width: 1.2em;
+	font-size: 22px;
+	height: 23px;
+	width: 34px;
 }
-.qq-upload-button-hover{ background:white; }
+
 span.button[title="Link"] {
 	text-decoration:underline;
 	font-family: sans-serif;
 	font-size: 0.85em;
 	padding-top: 0.1em;
-	height: 1.3em;
 }
 span.button[title="Image"] {
 	font-family: sans-serif;
 	font-size: 0.85em;
 	padding-top: 0.1em;
-	height: 1.29em;
 }
 span.button[title="File Upload"] {
 	font-family: sans-serif;
 	font-size: 0.85em;
 	padding-top: 0.1em;
-	height: 1.29em;
 }
 span.button[title="Bold"] { font-weight: bold; }
 span.button[title="Italic"] { font-style: italic; }
-span.button[title="Underline"] { text-decoration: underline; }
+span.button[title="Underline"] span {
+	text-decoration: underline;
+	position: relative;
+	top: -1px;
+	pointer-events: none;
+}
 span.button[title="Delete"] { text-decoration: line-through; }
 span.button[title="Color"] { color: red; font-family: sans-serif; }
 span.button[title="Size"] { font-family: sans-serif; }
-span.button[title="Block Quote"] {
-	height: 0.85em;
-	width: 0.5em;
-	font-size: 1.3em;
-}
 span.button[title="Block Quote"] span {
 	position: relative;
 	top: 4px;
-	left: -2px;
-	font-size: 1.25em;
+	font-size: 1.5em;
 	font-weight: bold;
 	pointer-events: none;
 }
+span.button:hover { background-color: #ff8; }
+span.button:active { background-color: #bbf; }
 span#emoticons, span#specialchars, span#styles {
 	display: none;
 	float: right;
 }
-#emobutton, #stylebutton, #spcbutton {
-	height: 1.2em;
-}
+span#emoticons img:hover, #emobutton:hover { background-color: black; }
+#spcbutton { padding: 2px 3px 0 3px; }
 #stylebutton {
+	padding: 2px 4px;
 	font-weight: bold;
 }
-span#emoticons img:hover, #emobutton:hover {
-	background-color: black;
+span#emoticons img {
+	vertical-align: top;
 }
-span.button:hover {
-	background-color: #ff8;
-}
-span.button:active {
-	background-color: #bbf;
-}
-del {
-	text-decoration: line-through;
-}
-ins {
-	text-decoration: underline;
-}
-#fine-uploader {
-	height: 30px;
-}
+del { text-decoration: line-through; }
+ins { text-decoration: underline; }
 blockquote {
   margin: 1px;
   padding: 5px 30px;
@@ -214,6 +197,9 @@ blockquote {
   background-repeat: no-repeat;
 	background-position: 0 3px;
 }
+
+.qq-upload-button-hover { background:white; }
+#fine-uploader { height: 30px; }
 div.userimg, div.uservid {
 	vertical-align: middle;
 	display: inline-block;
@@ -403,13 +389,13 @@ code {
 	<textarea id="messageInput" placeholder="Message" rows="3"></textarea>
 	<span id="kibbitz" class="button" title="Kibbitz">+</span>
 	<span id="usertime" class="button">Loading...</span>
-	<span id="delmsg" class="button small" title="Delete/edit last post">&#9986</span>
+	<span id="delmsg" class="button" title="Delete/edit last post">&#9986</span>
 	<span id="formatbuttons">
 		<span class="button" title="Link">link</span>
 		<span class="button" title="Image">img</span>
 		<span id="fileup" class="button" title="File Upload">&uarr;file</span>
-		<span id="stylebutton" class="button small" title="Styles">&Tau;</span>
-		<span id="spcbutton" class="button small" title="Special Characters">&copy;</span>
+		<span id="stylebutton" class="button" title="Styles">&Tau;</span>
+		<span id="spcbutton" class="button" title="Special Characters">&copy;</span>
 		<img id="emobutton" src="e/blank.gif" title="Emoticons" />
 	</span>
 	<span id="emoticons">
@@ -478,7 +464,7 @@ code {
 		<span class="button small" title="Size">S</span>
 		<span class="button small" title="Color">c</span>
 		<span class="button small" title="Delete">D</span>
-		<span class="button small" title="Underline">u</span>
+		<span class="button small" title="Underline"><span>u</span></span>
 		<span class="button small" title="Italic">i</span>
 		<span class="button small" title="Bold">b</span>
 		<span class="button small" title="Block Quote"><span>&ldquo;</span></span>
