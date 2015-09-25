@@ -518,6 +518,7 @@
 
     // Profile
     $('#user').click(function() {
+      if ($('#profile:visible').length) { cancelprofile(); return false; }
       var table = '<img class="close" src="img/close_icon.gif" />'+
           '<table><tr><td></td></tr><tr><td id="Ptext" colspan="2">rofile for&nbsp;'+id+
           '</td></tr><tr><td colspan="2" style="font-weight:normal">&nbsp;('+client+
@@ -589,6 +590,7 @@
 
     // Hall of Shame
     $('#others').click(function() {
+      if ($('#shame:visible').length) { cancelshame(); return false; }
       var table = '<img class="close" src="img/close_icon.gif" />'+
           '<table><tr><td><img src="img/eye.gif" width="73" height="63" /></td><td id="hos">Hall Of Shame</td></tr>';
       shame.sort(comptime);

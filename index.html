@@ -118,7 +118,7 @@ div.msgdiv div.msgbody {
 }
 
 #formatbuttons { float: right; }
-span.button {
+.button {
 	display: inline-block;
 	border: solid black 1px;
 	border-radius: 3px;
@@ -128,15 +128,20 @@ span.button {
 	height: 20px;
 	vertical-align: top;
 }
-span.small {
+.small {
 	min-width: 20px;
 }
-span.button[title="Kibbitz"] {
+.button[title="Kibbitz"] {
+	float: left;
 	font-family: sans-serif;
-	font-weight: bold;
-	font-size: 22px;
-	height: 23px;
+	font-size: 26px;
+	height: 34px;
+	line-height: 31px;
+	padding: 0;
 	width: 34px;
+	margin-right: 4px;
+	border-radius: 17px;
+	box-shadow: 0 2px 4px black;
 }
 
 span.button[title="Link"] {
@@ -178,8 +183,9 @@ span.button:active { background-color: #bbf; }
 span#emoticons, span#specialchars, span#styles {
 	display: none;
 	float: right;
+	word-wrap: break-word;
 }
-span#emoticons img:hover, #emobutton:hover { background-color: black; }
+#emoticons img:hover, #emobutton:hover { background-color: black; }
 #spcbutton { padding: 2px 3px 0 3px; }
 #stylebutton {
 	padding: 2px 4px;
@@ -199,7 +205,10 @@ blockquote {
 }
 
 .qq-upload-button-hover { background:white; }
-#fine-uploader { height: 30px; }
+#fine-uploader {
+	height: 30px;
+	margin-left: 37px;
+}
 div.userimg, div.uservid {
 	vertical-align: middle;
 	display: inline-block;
@@ -387,7 +396,7 @@ code {
 	<span id="others" class="button"><i>Connecting...</i></span>
 	<div id="shame"></div>
 	<textarea id="messageInput" placeholder="Message" rows="3"></textarea>
-	<span id="kibbitz" class="button" title="Kibbitz">+</span>
+	<div id="kibbitz" class="button" title="Kibbitz">+</div>
 	<span id="usertime" class="button">Loading...</span>
 	<span id="delmsg" class="button" title="Delete/edit last post">&#9986</span>
 	<span id="formatbuttons">
