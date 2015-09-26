@@ -421,7 +421,13 @@
       request: { endpoint: 'endpoint.php' },
       retry: { enableAuto: true },
       button: document.getElementById('fileup'),
-      ios: true
+      ios: true,
+      scaling: {
+        sendOriginal: false,
+        sizes: [
+          { name: '', maxSize: 1600 }
+        ]
+      }
     }).on('complete', function(event, id, fileName, responseJSON) {
       if (responseJSON.success) {
         files.push(responseJSON.uploadName);

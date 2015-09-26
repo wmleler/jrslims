@@ -6,11 +6,12 @@
 <title>Jack Rabbit Slims</title>
 <link rel="shortcut icon" href="favicon.ico" />
 
-<script type='text/javascript' src='https://cdn.firebase.com/js/client/2.2.7/firebase.js'></script>
+<script type='text/javascript' src='https://cdn.firebase.com/js/client/2.3.0/firebase.js'></script>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script type="text/javascript" src="all.fine-uploader-5.1.3.min.js"></script>
+<script type="text/javascript" src="jquery.fine-uploader.min.js"></script>
 <script type="text/javascript" src="slims.js"></script>
-<link href="fine-uploader-5.1.3.min.css" rel="stylesheet" />
+<link href="fine-uploader.min.css" rel="stylesheet" />
+
 <style type="text/css">
 html,body{margin:0;padding:0;}
 p,blockquote,pre,a,abbr,acronym,address,cite,del,dfn,
@@ -86,32 +87,32 @@ a:visited { color: #400040;}
 	font-style: italic;
 }
 #delmsg { display: none; }
-div.msgdiv {
+.msgdiv {
 	border-top: solid gray 1px;
 	padding: 0.3em 2px 0.2em 5px;
 	clear: both;
 	margin-left: 3px;
 }
-div.msgdiv.read {
+.msgdiv.read {
 	margin-left: 0;
 	border-left: solid black 3px;
 	border-right: solid black 3px;
 }
-div.msgdiv:not(.read) + div.msgdiv.read,
-div.msgdiv.read:first-of-type {
+.msgdiv:not(.read) + .msgdiv.read,
+.msgdiv.read:first-of-type {
 	border-top: dotted black 3px;
 	border-radius: 8px 16px 0 0;
 }
-div.msgdiv img.avatar {
+.msgdiv img.avatar {
 	display: none;
 	float: left;
 	border: none;
 	margin: 0 5px 2px 0;
 }
-div.msgdiv img.avatar.show {
+.msgdiv img.avatar.show {
 	display: block;
 }
-div.msgdiv div.msgbody {
+.msgdiv .msgbody {
 	margin-top: 0.4em;
 	clear: both;
 	white-space: pre-line;
@@ -143,44 +144,46 @@ div.msgdiv div.msgbody {
 	border-radius: 17px;
 	box-shadow: 0 2px 4px black;
 }
-
-span.button[title="Link"] {
+.button[title="Kibbitz"]:active {
+	box-shadow: none;
+}
+.button[title="Link"] {
 	text-decoration:underline;
 	font-family: sans-serif;
 	font-size: 0.85em;
 	padding-top: 0.1em;
 }
-span.button[title="Image"] {
+.button[title="Image"] {
 	font-family: sans-serif;
 	font-size: 0.85em;
 	padding-top: 0.1em;
 }
-span.button[title="File Upload"] {
+.button[title="File Upload"] {
 	font-family: sans-serif;
 	font-size: 0.85em;
 	padding-top: 0.1em;
 }
-span.button[title="Bold"] { font-weight: bold; }
-span.button[title="Italic"] { font-style: italic; }
-span.button[title="Underline"] span {
+.button[title="Bold"] { font-weight: bold; }
+.button[title="Italic"] { font-style: italic; }
+.button[title="Underline"] span {
 	text-decoration: underline;
 	position: relative;
 	top: -1px;
 	pointer-events: none;
 }
-span.button[title="Delete"] { text-decoration: line-through; }
-span.button[title="Color"] { color: red; font-family: sans-serif; }
-span.button[title="Size"] { font-family: sans-serif; }
-span.button[title="Block Quote"] span {
+.button[title="Delete"] { text-decoration: line-through; }
+.button[title="Color"] { color: red; font-family: sans-serif; }
+.button[title="Size"] { font-family: sans-serif; }
+.button[title="Block Quote"] span {
 	position: relative;
 	top: 4px;
 	font-size: 1.5em;
 	font-weight: bold;
 	pointer-events: none;
 }
-span.button:hover { background-color: #ff8; }
-span.button:active { background-color: #bbf; }
-span#emoticons, span#specialchars, span#styles {
+.button:hover { background-color: #ff8; }
+.button:active { background-color: #bbf; }
+#emoticons, #specialchars, #styles {
 	display: none;
 	float: right;
 	word-wrap: break-word;
@@ -206,36 +209,44 @@ blockquote {
 
 .qq-upload-button-hover { background:white; }
 #fine-uploader {
-	height: 30px;
+	height: 28px;
 	margin-left: 37px;
 }
-div.userimg, div.uservid {
+.qq-upload-drop-area {
+	font-family: Roboto, Arial, Helvetica, sans-serif;
+	font-size: 1.1em;
+	padding-top: 5px;
+	height: 28px;
+	min-height: initial;
+}
+
+.userimg, .uservid {
 	vertical-align: middle;
 	display: inline-block;
 	image-orientation: from-image;
 }
-div.userimg img {
+.userimg img {
 	max-width: 100%;
 	pointer-events: none;
 }
-div.userimg.worksmall img {
+.userimg.worksmall img {
 	max-width: 50px !important;
 	pointer-events: none;
 }
-div.userimg.worksmall::after {
+.userimg.worksmall::after {
 	content: " " url(img/expand.png);
 }
-div.userimg::after {
+.userimg::after {
 	content: " " url(img/shrink.png);
 }
-div.uservid.worksmall iframe {
+.uservid.worksmall iframe {
 	width: 128px;
 	height: 96px;
 }
-div.uservid.worksmall::after {
+.uservid.worksmall::after {
 	content: " " url(img/expand.png);
 }
-div.uservid::after {
+.uservid::after {
 	content: " " url(img/shrink.png);
 }
 img.close {
@@ -359,35 +370,64 @@ code {
 </style>
 <!-- Fine uploader template -->
 <script type="text/template" id="qq-template">
-  <div class="qq-uploader-selector qq-uploader">
-    <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
-      <span>Drop files here to upload</span>
-    </div>
-    <div class="qq-upload-button-selector qq-upload-button">
-      <div>Upload a file</div>
-    </div>
-    <span class="qq-drop-processing-selector qq-drop-processing">
-      <span>Processing dropped files...</span>
-      <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
-    </span>
-    <ul class="qq-upload-list-selector qq-upload-list">
-      <li>
-        <div class="qq-progress-bar-container-selector">
-          <div class="qq-progress-bar-selector qq-progress-bar"></div>
+    <div class="qq-uploader-selector qq-uploader" qq-drop-area-text="Drop files here to upload">
+        <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+            <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
         </div>
-        <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
-        <span class="qq-edit-filename-icon-selector qq-edit-filename-icon"></span>
-        <span class="qq-upload-file-selector qq-upload-file"></span>
-        <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
-        <span class="qq-upload-size-selector qq-upload-size"></span>
-        <a class="qq-upload-cancel-selector qq-upload-cancel" href="#">Cancel</a>
-        <a class="qq-upload-retry-selector qq-upload-retry" href="#">Retry</a>
-        <a class="qq-upload-delete-selector qq-upload-delete" href="#">Delete</a>
-        <span class="qq-upload-status-text-selector qq-upload-status-text"></span>
-      </li>
-    </ul>
-  </div>
+        <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+					Drop files here to upload
+            <span class="qq-upload-drop-area-text-selector"></span>
+        </div>
+        <div class="qq-upload-button-selector qq-upload-button">
+            <div>Upload a file</div>
+        </div>
+            <span class="qq-drop-processing-selector qq-drop-processing">
+                <span>Processing dropped files...</span>
+                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+            </span>
+        <ul class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
+            <li>
+                <div class="qq-progress-bar-container-selector">
+                    <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="qq-progress-bar-selector qq-progress-bar"></div>
+                </div>
+                <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                <span class="qq-upload-file-selector qq-upload-file"></span>
+                <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
+                <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                <span class="qq-upload-size-selector qq-upload-size"></span>
+                <button type="button" class="qq-btn qq-upload-cancel-selector qq-upload-cancel">Cancel</button>
+                <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">Retry</button>
+                <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">Delete</button>
+                <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+            </li>
+        </ul>
+
+        <dialog class="qq-alert-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">Close</button>
+            </div>
+        </dialog>
+
+        <dialog class="qq-confirm-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">No</button>
+                <button type="button" class="qq-ok-button-selector">Yes</button>
+            </div>
+        </dialog>
+
+        <dialog class="qq-prompt-dialog-selector">
+            <div class="qq-dialog-message-selector"></div>
+            <input type="text">
+            <div class="qq-dialog-buttons">
+                <button type="button" class="qq-cancel-button-selector">Cancel</button>
+                <button type="button" class="qq-ok-button-selector">Ok</button>
+            </div>
+        </dialog>
+    </div>
 </script>
+
 </head>
 <body>
 	<img id="logo" src="img/title.gif" title="Jack Rabbit Slim's" />
@@ -395,7 +435,7 @@ code {
 	<div id="profile"></div>
 	<span id="others" class="button"><i>Connecting...</i></span>
 	<div id="shame"></div>
-	<textarea id="messageInput" placeholder="Message" rows="3"></textarea>
+	<textarea id="messageInput" placeholder="Enter message" rows="3"></textarea>
 	<div id="kibbitz" class="button" title="Kibbitz">+</div>
 	<span id="usertime" class="button">Loading...</span>
 	<span id="delmsg" class="button" title="Delete/edit last post">&#9986</span>
