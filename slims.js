@@ -22,6 +22,7 @@
   // global variables
   var me; // user object
   var lastseen = null; // last post I've marked as read
+  var unseen = 0; // number of messages that have not been marked read
   var online = true;  // am I connected to Firebase?
   var messageBodies = {};  // message bodies, keyed by Firebase name
   var files = []; // uploaded files for a message
@@ -199,6 +200,7 @@
       if (snap.key() <= lastseen) {
         newdiv.addClass('read');
       } else {  // unread message, animate
+        unseen++; settitle();
         if (lastAnimation !== null) {
           lastAnimation.finish(); // finish animation before starting another one
         }
@@ -404,15 +406,14 @@
 
     // receive message read from database and mark messages
     myuserdb.child('lastseen').on('value', function(snap) {
+      unseen = 0;
       var lsid = snap.val();
       $('.msgdiv:not(.read)').filter(function(/* i, el */) {
+        if (this.id > lsid) { unseen++; }
         return this.id <= lsid;
       }).addClass('read');
 
-      // var ls = snap.val();
-      // $('.msgdiv:not(.read)').filter(function(/* i, el */) {
-      //     return $(this).find('.msgtime').data('mts') + serverOffset <= ls;
-      //   }).addClass('read');
+      settitle(); // show number of unread messages
     });
 
     // drag and drop file uploader
@@ -714,6 +715,10 @@
       $('#usertime').html('<time>'+now.toLocaleTimeString()+'</time>').attr('title', now.toLocaleDateString());
     }
     // console.log('num messages:', $('.msgtime').length, Object.keys(messageBodies).length);
+  }
+
+  function settitle() {
+    document.title = unseen ? 'Slims ('+unseen+')' : 'Jack Rabbit Slims';
   }
 
 
