@@ -666,8 +666,9 @@
     });
 
     $('#logo').click(function() {
-      $('#helpdiv').show(200).one('click', function() {
-        $('#helpdiv').hide();
+      if ($('#helpdiv:visible').length) { $('#helpdiv').hide(300); return false; }
+      $('#helpdiv').show().one('click', function() {
+        $('#helpdiv').hide(300);
       });
     });
 
