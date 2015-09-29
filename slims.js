@@ -357,9 +357,9 @@
     // delete / edit message (scissors)
     $('#delmsg').click( function() {
       if (lastpost === null) { return; }
-      var name = lastpost.key();  // get generated name of last post
-      var msgbody = $('#'+name+' .msgbody').html();
-      adjustHeight(($('#messageInput').val(msgbody))[0]);
+      var $msg = $('#'+lastpost.key());  // get DOM for last post
+      if (!$msg.hasClass('read')) { unseen--; settitle(); }
+      adjustHeight(($('#messageInput').val($msg.find('.msgbody').html()))[0]);
       $('#delmsg').css('display', 'none');
       lastpost.remove();
       lastpost = null;
