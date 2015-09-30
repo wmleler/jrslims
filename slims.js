@@ -109,7 +109,7 @@
     var msgdb = firebasedb.child('messages'); // list of messages
     var onoffdb = firebasedb.child('onoff');
     var myonoffdb;  // when I go on or off line
-    var mystatusdb; // online status
+    var mystatusdb; // myonoffdb/status
     var usersdb = firebasedb.child('users');  // all user profiles
     var myuserdb = usersdb.child(id);  // my profile
 
@@ -149,9 +149,9 @@
       if (paramOverride) { getParams(window.location.href); }
 
       myonoffdb = onoffdb.child(id);
+      mystatusdb = myonoffdb.child('status');
+
       connectdb.on('value', presencechange);
-      mystatusdb = myonoffdb.child('status').push(Firebase.ServerValue.TIMESTAMP);
-      mystatusdb.onDisconnect().remove();
 
       var now = new Date();
       $('#usertime').html('<time>'+now.toLocaleTimeString()+'</time>').attr('title', now.toLocaleDateString()).click(uptime);
@@ -223,11 +223,14 @@
 
     function presencechange(snap) { // manage whether I am connected or not, and timestamp when I disconnect
       if (snap.val() === true) {  // online
+        var stat = mystatusdb.push(Firebase.ServerValue.TIMESTAMP); // status of this connection
+        stat.onDisconnect().remove(); // remove on disconnect
+        myonoffdb.onDisconnect().update({ offline: Firebase.ServerValue.TIMESTAMP });  // disconnect time
+        myonoffdb.update({ online: Firebase.ServerValue.TIMESTAMP }); // I am online now
+
         online = true;
         $('#kibbitz').css('opacity', 1.0);
         $('#usertime').text('').css('color','black');
-        myonoffdb.onDisconnect().update({ offline: Firebase.ServerValue.TIMESTAMP });  // disconnect
-        myonoffdb.update({ online: Firebase.ServerValue.TIMESTAMP }); // I am online now
         uptime();
       } else {  // offline
         online = false;
@@ -255,12 +258,11 @@
       adjustHeight(e.delegateTarget);
     }).on('paste', function(e) {
       adjustHeight(e.delegateTarget);
-    }).
-    css('height');
+    }).css('height');
 
     function adjustHeight(el) { // adjust height of input text area
       if (el.scrollHeight > el.clientHeight) {
-        el.style.height = el.scrollHeight+'px';
+        el.style.height = (4 + el.scrollHeight)+'px';
       }
     }
 
