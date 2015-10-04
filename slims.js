@@ -195,6 +195,7 @@
       }).wrap('<div class="userimg" />');
       newdiv.find('div.userimg > div.userimg').unwrap();  // get rid of multiple img wraps
       newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
+      newdiv.find('blink').toggleClass('hideme', work);
       $('#messagesDiv').prepend(newdiv);
       // if (mstamp <= lastseen) {
       if (snap.key() <= lastseen) {
@@ -386,6 +387,9 @@
         case 'Delete' :     wrap('<del>', '</del>'); break;
         case 'Color':       wrap('<font color="red">', '</font>'); break;
         case 'Size':        wrap('<font size="+2">', '</font>'); break;
+        case 'Blink':       wrap('<blink>', '</blink>'); break;
+        case 'List':        wrap('<ul>', '</ul>'); break;
+        case 'Item':        wrap('<li>', '</li>'); break;
         case 'Block Quote': wrap('<blockquote>', '</blockquote>'); break;
       }
     });
@@ -548,6 +552,7 @@
         work = $(this).prop('checked');
         $('#logo, div.msgdiv img.avatar').toggleClass('show', !work);
         $('div.userimg, div.uservid').toggleClass('worksmall', work);
+        $('blink').toggleClass('hideme', work);
         setCookie('work', work ? 'true' : 'false');
       });
 			$('#fontsize').change(function() {

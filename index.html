@@ -359,6 +359,27 @@ code {
 	padding-left: 2em;
 	display: block;
 }
+blink {
+  animation: blink 1s steps(5, start) infinite;
+  -webkit-animation: blink 1s steps(5, start) infinite;
+}
+blink:hover, blink.hideme {
+	animation: none;
+	-webkit-animation: none;
+}
+blink.hideme {
+	background-color: #ffa;	
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
 @media only screen and (min-width: 320px) and (max-width: 480px) {
 	html {
 		-webkit-text-size-adjust: none;
@@ -519,6 +540,9 @@ code {
 		<span class="special button">&deg;C</span>
 	</span>
 	<span id="styles">
+		<span class="button small" title="List">&#8942;</span>
+		<span class="button small" title="Item">&#9642;</span>
+		<span class="button small" title="Blink"><blink>!</blink></span>
 		<span class="button small" title="Size">S</span>
 		<span class="button small" title="Color">c</span>
 		<span class="button small" title="Delete">D</span>
