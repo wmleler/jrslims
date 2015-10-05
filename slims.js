@@ -383,8 +383,9 @@
       switch(el.title) {
         case 'Bold':        wrap('<b>','</b>'); break;
         case 'Italic':      wrap('<i>','</i>'); break;
-        case 'Underline':   wrap('<ins>', '</ins>'); break;
-        case 'Delete' :     wrap('<del>', '</del>'); break;
+        case 'Underline':   wrap('<u>', '</u>'); break;
+        case 'Strike' :     wrap('<s>', '</s>'); break;
+        case 'Monospace':   wrap('<font face="monospace">', '</font>'); break;
         case 'Color':       wrap('<font color="red">', '</font>'); break;
         case 'Size':        wrap('<font size="+2">', '</font>'); break;
         case 'Blink':       wrap('<blink>', '</blink>'); break;
