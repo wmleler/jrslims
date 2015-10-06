@@ -389,8 +389,8 @@
         case 'Color':       wrap('<font color="red">', '</font>'); break;
         case 'Size':        wrap('<font size="+2">', '</font>'); break;
         case 'Blink':       wrap('<blink>', '</blink>'); break;
-        case 'List':        wrap('<ul>', '</ul>'); break;
-        case 'Item':        wrap('<li>', '</li>'); break;
+        case 'Spacing':     wrap('<pre>', '</pre>'); break;
+        case 'Indent':      wrap('<ins>', '</ins>'); break;
         case 'Block Quote': wrap('<blockquote>', '</blockquote>'); break;
       }
     });
