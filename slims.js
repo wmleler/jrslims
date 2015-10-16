@@ -438,15 +438,17 @@
       }
     }).on('complete', function(event, id, fileName, responseJSON) {
       if (responseJSON.success) {
-        files.push(responseJSON.uploadName);
+        console.log('upload:', responseJSON);
+        var uploadName = responseJSON.uuid + '/' + responseJSON.uploadName;
+        files.push(uploadName);
         var suffix = fileName.slice(1+fileName.lastIndexOf('.')).toLowerCase();
         if (suffix==='jpg' || suffix==='jpeg' || suffix==='png' || suffix==='gif') {
-          insert('<img src="files/'+responseJSON.uploadName+'" />');
+          insert('<img src="files/'+uploadName+'" />');
         } else if (suffix==='mp3') {
-          insert('<audio controls><source src="files/'+responseJSON.uploadName+'" type="audio/mpeg">'+
-            '<a href="files/'+responseJSON.uploadName+'" target="_blank">'+fileName+'</a></audio>');
+          insert('<audio controls><source src="files/'+uploadName+'" type="audio/mpeg">'+
+            '<a href="files/'+uploadName+'" target="_blank">'+fileName+'</a></audio>');
         } else {
-          insert('<a href="files/'+responseJSON.uploadName+'" target="_blank">'+fileName+'</a>');
+          insert('<a href="files/'+uploadName+'" target="_blank">'+fileName+'</a>');
         }
       }
     });
