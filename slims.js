@@ -438,7 +438,6 @@
       }
     }).on('complete', function(event, id, fileName, responseJSON) {
       if (responseJSON.success) {
-        console.log('upload:', responseJSON);
         var uploadName = responseJSON.uuid + '/' + responseJSON.uploadName;
         files.push(uploadName);
         var suffix = fileName.slice(1+fileName.lastIndexOf('.')).toLowerCase();
