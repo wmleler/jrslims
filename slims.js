@@ -227,7 +227,9 @@
         var status = {
           time: Firebase.ServerValue.TIMESTAMP,
           client: client,
-          agent: navigator.userAgent
+          agent: navigator.userAgent,
+          platform: navigator.platform,
+          vendor: navigator.vendor
         };
         var stat = mystatusdb.push(status); // status of this connection
         stat.onDisconnect().remove(); // remove on disconnect
