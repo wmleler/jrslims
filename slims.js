@@ -224,7 +224,12 @@
 
     function presencechange(snap) { // manage whether I am connected or not, and timestamp when I disconnect
       if (snap.val() === true) {  // online
-        var stat = mystatusdb.push(Firebase.ServerValue.TIMESTAMP); // status of this connection
+        var status = {
+          time: Firebase.ServerValue.TIMESTAMP,
+          client: client,
+          agent: navigator.userAgent
+        };
+        var stat = mystatusdb.push(status); // status of this connection
         stat.onDisconnect().remove(); // remove on disconnect
         myonoffdb.onDisconnect().update({ offline: Firebase.ServerValue.TIMESTAMP });  // disconnect time
         myonoffdb.update({ online: Firebase.ServerValue.TIMESTAMP }); // I am online now
@@ -630,7 +635,11 @@
     function oldestconnect(st) {
       var oldest = (new Date()).valueOf();
       $.each(st, function(k, v) {
-        if (v < oldest) { oldest = v; }
+        if (typeof v === 'number') {
+          if (v < oldest) { oldest = v; }
+        } else {
+          if (v.time < oldest) { oldest = v.time; }
+        }
       });
       return oldest;
     }
