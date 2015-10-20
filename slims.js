@@ -219,7 +219,9 @@
       if (msgbody !== undefined) {
         delete messageBodies[name];
       }
-      $('#'+name).remove();  // remove message from DOM
+      var $el = $('#'+name);
+      if (!$el.hasClass('read')) { unseen--; settitle(); }
+      $el.remove();  // remove message from DOM
     } // end dropmessages
 
     function presencechange(snap) { // manage whether I am connected or not, and timestamp when I disconnect
@@ -368,7 +370,6 @@
     $('#delmsg').click( function() {
       if (lastpost === null) { return; }
       var $msg = $('#'+lastpost.key());  // get DOM for last post
-      if (!$msg.hasClass('read')) { unseen--; settitle(); }
       adjustHeight(($('#messageInput').val($msg.find('.msgbody').html()))[0]);
       $('#delmsg').css('display', 'none');
       lastpost.remove();
