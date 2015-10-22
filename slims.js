@@ -32,6 +32,8 @@
   var messageInputHeight; // default height of messageInput textarea
   var paramOverride = false;
   var client = ''; // user's domain or IP address
+  var clientIP = '';  // client IP address only
+  var browserinfo;  // https://github.com/WhichBrowser/WhichBrowser
   var lastAnimation = null; // last message animating open
   var lastpost = null;  // save last message for editing
   var imgWidth, imgHeight;  // max size of images
@@ -226,12 +228,22 @@
 
     function presencechange(snap) { // manage whether I am connected or not, and timestamp when I disconnect
       if (snap.val() === true) {  // online
+        // get browser info - https://github.com/WhichBrowser/WhichBrowser
+        if (!browserinfo) { browserinfo = new WhichBrowser(); }
         var status = {
-          time: Firebase.ServerValue.TIMESTAMP,
-          client: client,
-          agent: navigator.userAgent,
-          platform: navigator.platform,
-          vendor: navigator.vendor
+          time: Firebase.ServerValue.TIMESTAMP, // login time
+          client: client, // domain name or IP address
+          clientIP: clientIP, // IP address
+
+          vendor: navigator.vendor || '', // e.g., Apple Computer Inc.
+          platform: navigator.platform || '', // e.g., MacIntel
+          agent: navigator.userAgent || '',  // e.g., Mozilla Webkit ...
+
+          browser: (browserinfo.browser ? browserinfo.browser.toString() : ''), // e.g., Safari 9.0
+          os: (browserinfo.os ? browserinfo.os.toString() : ''),  // e.g., OS X Yosemite 10.10
+          devicetype: (browserinfo.device.type ? browserinfo.device.type.toString() : ''),  // e.g., desktop
+          devicemanufacturer: (browserinfo.device.manufacturer ? browserinfo.device.manufacturer.toString() : ''),  // e.g., Apple
+          devicemodel: (browserinfo.device.model ? browserinfo.device.model.toString() : '')  // e.g., iPhone
         };
         var stat = mystatusdb.push(status); // status of this connection
         stat.onDisconnect().remove(); // remove on disconnect
@@ -531,11 +543,12 @@
       $('#formatbuttons').show();
     }
 
-    $('#stylebutton').on('click', function() {
+    $('#stylebutton').on('click', function(e) {
       $('#formatbuttons').hide();
       $('#styles').show();
-      $('#styles span').on('click', sty);
+      $('#styles>span.button').on('click', sty);
       $(document).on('click', cancelsty);
+      $('#messageInput').focus();
       return false;
     });
 
@@ -613,7 +626,7 @@
     }
 
     // Hall of Shame
-    $('#others').click(function() {
+    $('#others').click(function(e) {
       if ($('#shame:visible').length) { cancelshame(); return false; }
       var table = '<img class="close" src="img/close_icon.gif" />'+
           '<table><tr><td><img src="img/eye.gif" width="73" height="63" /></td><td id="hos">Hall Of Shame</td></tr>';
@@ -627,8 +640,26 @@
             deltaTime(now - (v.status !== undefined ? oldestconnect(v.status) : v.online)) :
             'offline for '+deltaTime(now - (v.offline || v.online))) +
             '</td></tr>';
+        if (v.status) {
+          var devices = details(v.status);
+          table += '<tr class="client"><td colspan="2">';
+          $.each(devices, function(k, v) {
+            table += '<ul><li title="' + v.ip +
+              '">' + v.devicetype + ' ' + v.devicemanufacturer + ' ' + v.platform +
+              ' ' + v.devicemodel + ' ' + v.os +'<br />(' + v.client + ')<ol>';
+            $.each(v.browsers, function(i, v) {
+              table += '<li title="' + v.agent + '">' + v.vendor + ' ' +
+              v.browser + ' @ ' + deltaTime(now - v.time) + ' ago</li>';
+            });
+            table += '</ol></li></ul>';
+          });
+          table += '</td></tr>';
+        }
       });
       $('#shame').show().on('click', 'img.close', cancelshame).html(table + '</table>');
+      $('#shame tr.uonline').on('click', function(e) {
+        $(e.currentTarget).next('tr.client').toggle();
+      })
     }); // end Hall of Shame
 
     function cancelshame() {
@@ -657,6 +688,35 @@
       if (aon) { return -1; } // only a online
       if (bon) { return 1; }  // only b online
       return b.offline - a.offline; // both offline
+    }
+
+    // details for each user
+    function details(s) {
+      var r = {}; // results
+      if (s === undefined) { return; }
+      $.each(s, function(k, v) {
+        if (v.client === undefined) { return; }
+        var key = v.client + '$' + v.platform + v.os + v.devicemanufacturer + v.devicemodel;
+        if (r[key] === undefined) {
+          r[key] = {
+            client: v.client,
+            ip: v.clientIP,
+            platform: v.platform,
+            os: v.os,
+            devicetype: v.devicetype,
+            devicemanufacturer: v.devicemanufacturer,
+            devicemodel: v.devicemodel,
+            browsers: []
+          };
+        }
+        r[key].browsers.push({
+          vendor: v.vendor,
+          browser: v.browser,
+          time: v.time,
+          agent: v.agent
+        });
+      });
+      return r;
     }
 
     // manage list of online users
@@ -696,6 +756,7 @@
     // get client domain or IP address
     $.getJSON('client.php', function(data) {
       client = $.trim(data.client);
+      clientIP = $.trim(data.clientIP);
     });
 
     // get script URL of Slims
