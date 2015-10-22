@@ -627,6 +627,7 @@
 
     // Hall of Shame
     $('#others').click(function(e) {
+      e.preventDefault();
       if ($('#shame:visible').length) { cancelshame(); return false; }
       var table = '<img class="close" src="img/close_icon.gif" />'+
           '<table><tr><td><img src="img/eye.gif" width="73" height="63" /></td><td id="hos">Hall Of Shame</td></tr>';
@@ -657,13 +658,16 @@
         }
       });
       $('#shame').show().on('click', 'img.close', cancelshame).html(table + '</table>');
+      if (e.shiftKey) { $('#shame tr.client').show(); }
       $('#shame tr.uonline').on('click', function(e) {
         $(e.currentTarget).next('tr.client').toggle();
       })
+      // return false;
     }); // end Hall of Shame
 
-    function cancelshame() {
+    function cancelshame(e) {
       $('#shame').off('click', 'img.close', cancelshame).hide(300);
+      return false;
     }
 
     function oldestconnect(st) {
@@ -706,7 +710,7 @@
             devicetype: v.devicetype,
             devicemanufacturer: v.devicemanufacturer,
             devicemodel: v.devicemodel,
-            browsers: []
+            browsers: []  // list of browser connections for each machine/device
           };
         }
         r[key].browsers.push({
