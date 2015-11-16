@@ -190,7 +190,7 @@
       // newdiv.find('.msgbody img:not([src^="e/"])').wrap('<div class="userimg" />');
       newdiv.find('.msgbody img').filter(function() {
         var src = this.getAttribute('src');
-        return src.match(/^(e|emoticons)\//) === null;
+        return src.match(/^e\//) === null;
       }).css({
         maxWidth: imgWidth + 'px',
         maxHeight: imgHeight + 'px'
