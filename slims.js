@@ -93,7 +93,7 @@
     resize();
 
     $('#logo').toggleClass('show', !work);
-    $('body').css('font-size', fontsize);
+    $('body').css('font-size', fontsize + 'px');
     miserlou.volume = volume * 0.01;
 
     // determine user id
@@ -598,7 +598,7 @@
       });
 			$('#fontsize').change(function() {
         fontsize = +$.trim($(this).val());
-        $('body').css('font-size', fontsize);
+        $('body').css('font-size', fontsize + 'px');
         $('#dispfs').text(fontsize);
         setCookie('fontsize', fontsize);
       }).on('input', function() {
