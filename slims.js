@@ -18,6 +18,7 @@
   var avatar = ''; // user icon
   var modifierkey = 16, enterkey = 13;  // submit: shift return
 	var fontsize = 16;	// font size in px
+  var volume = 50;  // volume of sounds
 
   // global variables
   var me; // user object
@@ -37,6 +38,7 @@
   var lastAnimation = null; // last message animating open
   var lastpost = null;  // save last message for editing
   var imgWidth, imgHeight;  // max size of images
+  var miserlou = new Audio('miserlou.mp3');
 
 	function getParams(p) { // read from URL parameters or cookie
 		var params = {}; // parameters
@@ -47,6 +49,7 @@
 		if (params.modifierkey) { modifierkey = +params.modifierkey; }
 		if (params.enterkey) { enterkey = +params.enterkey; }
 		if (params.work) { work = params.work === 'true'; }
+    if (params.volume) { volume = +params.volume; }
 		if (params.fontsize) { fontsize = +params.fontsize; }
 		if (params.email) { email = params.email; }
 		if (params.avatar) { avatar = params.avatar; }
@@ -91,6 +94,7 @@
 
     $('#logo').toggleClass('show', !work);
     $('body').css('font-size', fontsize);
+    miserlou.volume = volume * 0.01;
 
     // determine user id
 		var t;
@@ -173,6 +177,10 @@
       if (now - timeout > 5000) { // 5 seconds
         uptime();
         timeout = now;
+        if (!work) {
+          miserlou.currentTime=0;
+          miserlou.play();
+        }
       }
       var newdiv = $('<div/>', { id: snap.key(), 'class': 'msgdiv' });
       if (message.avatar) {
@@ -555,11 +563,13 @@
     // Profile
     $('#user').click(function() {
       if ($('#profile:visible').length) { cancelprofile(); return false; }
-      var table = '<img class="close" src="img/close_icon.gif" />'+
-          '<table><tr><td></td></tr><tr><td id="Ptext" colspan="2">rofile for&nbsp;'+id+
-          '</td></tr><tr><td colspan="2" style="font-weight:normal">&nbsp;('+client+
+      var table = '<img class="close" src="img/close_icon.gif" /><img id="myavatar" width="39" height="50" src="'+
+          avatar+'" /><table><tr><td></td></tr><tr><td id="Ptext" colspan="2">rofile for&nbsp;'+
+          id+'</td></tr><tr><td colspan="2" style="font-weight:normal">&nbsp;('+client+
           ')</td></tr><tr><td style="text-align:right">work:</td><td><input id="work" type="checkbox" '+(work ? 'checked="checked" ' : '')+
-          ' /> (only on this device)</td></tr><tr><td style="text-align:right">fontsize:</td><td><input id="fontsize" type="range" value="'+
+          ' /> (only on this device)</td></tr><tr><td style="text-align:right">volume:</td><td><input id="volume" type="range" value="'+
+          volume+'" /><span id="dispvol">'+volume+
+          '</span></td></tr><tr><td style="text-align:right">fontsize:</td><td><input id="fontsize" type="range" value="'+
           fontsize+'" min="12" max="20" step="0.5" /><span id="dispfs">'+fontsize+
           '</span>px</td></tr><tr><td style="text-align:right">submit:</td><td><select id="modifierkey" value="'+
           modifierkey+'"><option value="16">shift</option><option value="17">ctrl</option><option value="27">esc</option>'+
@@ -567,8 +577,7 @@
           enterkey+'"><option value="13">return</option><option value="38">&uarr;</option><option value="39">&rarr;</option>'+
           '<option value="40">&darr;</option><option value="35">end</option><option value="-1">(none)</option></select></td></tr>'+
           '<tr><td style="text-align:right">email:</td><td><input id="email" type="text" value="'+
-          email+'" /></td></tr><tr><td style="text-align:right">avatar:</td><td><img id="myavatar" src="'+
-          avatar+'" width="39" height="50" /> <input id="avatarurl" type="text" value="'+
+          email+'" /></td></tr><tr><td style="text-align:right">avatar:</td><td><input id="avatarurl" type="text" value="'+
           avatar+'" /></td></tr></table><div id="cloakroom"></div>';
       $('#profile').show().on('click', 'img.close', cancelprofile).html(table);
       $('#work').change(function() {
@@ -578,12 +587,21 @@
         $('blink').toggleClass('hideme', work);
         setCookie('work', work ? 'true' : 'false');
       });
+      $('#volume').change(function() {
+        volume = +$.trim($(this).val());
+        miserlou.volume = volume * 0.01;
+        $('#dispvol').text(volume);
+        setCookie('volume', volume);
+        miserlou.play();
+      }).on('input', function() {
+        $('#dispvol').text($.trim($(this).val()));
+      });
 			$('#fontsize').change(function() {
         fontsize = +$.trim($(this).val());
         $('body').css('font-size', fontsize);
         $('#dispfs').text(fontsize);
         setCookie('fontsize', fontsize);
-      }).mousemove(function() {
+      }).on('input', function() {
         $('#dispfs').text($.trim($(this).val()));
       });
       $('#email').change(function() {
@@ -598,7 +616,7 @@
         enterkey = +$.trim($(this).val());
         setTimeout(function() { myuserdb.update({ enterkey: enterkey }); }, 10);
       });
-      $('#myavatar').parent().on('click', function() {
+      $('#avatarurl').parent().add('#myavatar').on('click', function() {
         if ($('#cloakroom img').length > 0) { return; }
         $.each(slimages, function(k, v) {
           $('<img/>', { src: 'avatars/'+k, title: v }).appendTo('#cloakroom');
