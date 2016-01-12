@@ -67,6 +67,12 @@
     paramOverride = true;
   }
 
+  if (!Date.now) {  // needs Polyfill
+    Date.now = function now() {
+      return new Date().getTime();
+    };
+  }
+
   $(document).ready(function() {
 
     var $win = $(window);
@@ -162,7 +168,7 @@
       var now = new Date();
       $('#usertime').html('<time>'+now.toLocaleTimeString()+'</time>').attr('title', now.toLocaleDateString()).click(uptime);
 
-      timeout = now.valueOf();
+      timeout = now.valueOf() + 5000;
       setTimeout( function() {  // delay until after logo appears
         msgdb.on('child_added', addmessages); // start getting messages
         msgdb.on('child_removed', dropmessages);  // remove from messages list
@@ -173,10 +179,10 @@
     function addmessages(snap) {
       var message = snap.val();
       var mstamp = message.stamp;
-      var now = (new Date()).valueOf();
-      if (now - timeout > 5000) { // 5 seconds
+      var now = Date.now();
+      if (now > timeout) { // 5 seconds
         uptime();
-        timeout = now;
+        timeout = now + 5000;
         if (!work) {
           miserlou.currentTime=0;
           miserlou.play();
@@ -342,6 +348,7 @@
         if (client) { post.host = client; }
         if (avatar) { post.avatar = avatar; }
         if (files.length > 0) { post.files = files.join("\n"); }
+        timeout = Date.now() + 1000;
         lastpost = msgdb.push(post, complete);  // post
         lastpost.setPriority(Firebase.ServerValue.TIMESTAMP);
         // lastpost.setWithPriority(post, Firebase.ServerValue.TIMESTAMP);
@@ -374,7 +381,7 @@
 
       function cleanupmsg(snap /*, second */) { // delete old message and files
         var m = snap.val();
-        if (m.stamp < (new Date()) - KEEPTIME) {  // should use priority
+        if (m.stamp < Date.now() - KEEPTIME) {  // should use priority
           if (m.files && m.files.length > 0) { // delete uploaded files
             $.each(m.files.split("\n"), function(i, v) {
               $.get('delete.php?file='+v);
@@ -689,7 +696,7 @@
     }
 
     function oldestconnect(st) {
-      var oldest = (new Date()).valueOf();
+      var oldest = Date.now();
       $.each(st, function(k, v) {
         if (typeof v === 'number') {
           if (v < oldest) { oldest = v; }
