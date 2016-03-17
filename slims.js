@@ -302,9 +302,9 @@
       }
     }
 
-    function imagebig(e) {  // in work mode, toggle image size
+    function imagebig(e) {  // toggle image size
       var $t = $(e.target);
-      if (e.shiftKey) {
+      if (e.shiftKey) { // open raw image in new window
         window.open($t.find(e.target.classList.
             contains('uservid') ? 'iframe' : 'img').attr('src'));
         return;
@@ -333,10 +333,10 @@
         if (mess.length === 0) {  // files uploaded, but no message
           mess = 'Attachments:';
           $.each(files, function(i, v) {
-            mess += ' <a href="'+v+'" target="_blank">'+v+'</a>';
+            mess += ' <a href="'+v+'" target="_blank" rel="noopener">'+v+'</a>';
           });
         } else {  // linkify message
-          mess = mess.replace(urlRegex, '<a href="$&" target="_blank">$&</a>'). // URL to link
+          mess = mess.replace(urlRegex, '<a href="$&" target="_blank" rel="noopener">$&</a>'). // URL to link
               replace(mailRegex, '<a href="mailto:$&">$&</a>'); // mail address to link
         }
         var post = {
@@ -480,9 +480,9 @@
           insert('<img src="files/'+uploadName+'" />');
         } else if (suffix==='mp3') {
           insert('<audio controls><source src="files/'+uploadName+'" type="audio/mpeg">'+
-            '<a href="files/'+uploadName+'" target="_blank">'+fileName+'</a></audio>');
+            '<a href="files/'+uploadName+'" target="_blank" rel="noopener">'+fileName+'</a></audio>');
         } else {
-          insert('<a href="files/'+uploadName+'" target="_blank">'+fileName+'</a>');
+          insert('<a href="files/'+uploadName+'" target="_blank" rel="noopener">'+fileName+'</a>');
         }
       }
     });
@@ -899,7 +899,7 @@
       if (sel.length === 0) { sel = lurl = prompt('Enter Link URL:', 'http://'); }
       else { lurl = prompt('Enter URL for '+ sel + ':', 'http://'); }
       if (!lurl) { return; }
-      var tag = '<a href="' + lurl + '" target="_blank">' + sel + '</a>';
+      var tag = '<a href="' + lurl + '" target="_blank" rel="noopener">' + sel + '</a>';
       el.value = el.value.substring(0, ss) + tag + el.value.substring(se, el.value.length);
       el.selectionStart = el.selectionEnd = ss + tag.length;
     } else {  // IE
@@ -907,7 +907,8 @@
       if (selected.length === 0) { selected = lurl = prompt('Enter Link URL:', 'http://'); }
       else { lurl = prompt('Enter URL for ' + selected + ':', 'http://'); }
       if (!lurl) { return; }
-      document.selection.createRange().text = '<a href="' + lurl + '" target="_blank">'+ selected + '</a>';
+      document.selection.createRange().text = '<a href="' + lurl +
+          '" target="_blank" rel="noopener">'+ selected + '</a>';
     }
   }
 
