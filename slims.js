@@ -7,9 +7,15 @@
 (function($) {
   "use strict";
 
-  var DATABASE = 'https://jrslims.firebaseIO.com/';
   var KEEPNUM = 250;  // minimum number of posts to keep
   var KEEPTIME = 86400000;  // keep posts for at least one day
+
+  firebase.initializeApp({
+    apiKey: "AIzaSyBv0X39Wx4l2pYSP6I5NAsLPwES5Gh6jzA",
+    authDomain: "jrslims.firebaseapp.com",
+    databaseURL: "https://jrslims.firebaseio.com",
+    storageBucket: "project-5932559118841758398.appspot.com"
+  });
 
   // profile data
   var id = ''; // userid
@@ -116,7 +122,7 @@
     $('#user').text(id);  // profile button label
 
     // firebase references
-    var firebasedb = new Firebase(DATABASE);
+    var firebasedb = firebase.database().ref();
     var connectdb = firebasedb.child('.info/connected'); // connected
     var msgdb = firebasedb.child('messages'); // list of messages
     var onoffdb = firebasedb.child('onoff');
@@ -188,7 +194,7 @@
           miserlou.play();
         }
       }
-      var newdiv = $('<div/>', { id: snap.key(), 'class': 'msgdiv' });
+      var newdiv = $('<div/>', { id: snap.key, 'class': 'msgdiv' });
       if (message.avatar) {
         $('<img/>', { 'class': 'avatar'+(work ? '' : ' show'), src: message.avatar }).appendTo(newdiv);
       }
@@ -214,7 +220,7 @@
       newdiv.find('blink').toggleClass('hideme', work);
       $('#messagesDiv').prepend(newdiv);
       // if (mstamp <= lastseen) {
-      if (snap.key() <= lastseen) {
+      if (snap.key <= lastseen) {
         newdiv.addClass('read');
       } else {  // unread message, animate
         unseen++; settitle();
@@ -226,11 +232,11 @@
         });  // slow reveal
         lastAnimation = newdiv;
       }
-      messageBodies[snap.key()] = newdiv.html();  // keep track of messages
+      messageBodies[snap.key] = newdiv.html();  // keep track of messages
     } // end add messages
 
     function dropmessages(snap) { // sync from Firebase
-      var name = snap.key();
+      var name = snap.key;
       var msgbody = messageBodies[name];
       if (msgbody !== undefined) {
         delete messageBodies[name];
@@ -245,7 +251,7 @@
         // get browser info - https://github.com/WhichBrowser/WhichBrowser
         if (!browserinfo) { browserinfo = new WhichBrowser(); }
         var status = {
-          time: Firebase.ServerValue.TIMESTAMP, // login time
+          time: firebase.database.ServerValue.TIMESTAMP, // login time
           client: client, // domain name or IP address
           clientIP: clientIP, // IP address
 
@@ -261,8 +267,8 @@
         };
         var stat = mystatusdb.push(status); // status of this connection
         stat.onDisconnect().remove(); // remove on disconnect
-        myonoffdb.onDisconnect().update({ offline: Firebase.ServerValue.TIMESTAMP });  // disconnect time
-        myonoffdb.update({ online: Firebase.ServerValue.TIMESTAMP }); // I am online now
+        myonoffdb.onDisconnect().update({ offline: firebase.database.ServerValue.TIMESTAMP });  // disconnect time
+        myonoffdb.update({ online: firebase.database.ServerValue.TIMESTAMP }); // I am online now
 
         online = true;
         $('#kibbitz').css('opacity', 1.0);
@@ -342,7 +348,7 @@
         var post = {
           name: name,
           text: mess,
-          stamp: Firebase.ServerValue.TIMESTAMP
+          stamp: firebase.database.ServerValue.TIMESTAMP
         };
         if (email) { post.email = email; }
         if (client) { post.host = client; }
@@ -350,8 +356,8 @@
         if (files.length > 0) { post.files = files.join("\n"); }
         timeout = Date.now() + 1000;
         lastpost = msgdb.push(post, complete);  // post
-        lastpost.setPriority(Firebase.ServerValue.TIMESTAMP);
-        // lastpost.setWithPriority(post, Firebase.ServerValue.TIMESTAMP);
+        lastpost.setPriority(firebase.database.ServerValue.TIMESTAMP);
+        // lastpost.setWithPriority(post, firebase.database.ServerValue.TIMESTAMP);
         // $('#delmsg').css('display', 'inline-block');
         // $('#messageInput').val('').css('height', messageInputHeight); // clear message text
         // files = [];
@@ -387,7 +393,7 @@
               $.get('delete.php?file='+v);
             });
           }
-          snap.ref().remove(deletemsg);  // delete message from Firebase
+          snap.ref.remove(deletemsg);  // delete message from Firebase
         }
       }
 
@@ -396,7 +402,7 @@
     // delete / edit message (scissors)
     $('#delmsg').click( function() {
       if (lastpost === null) { return; }
-      var $msg = $('#'+lastpost.key());  // get DOM for last post
+      var $msg = $('#'+lastpost.key);  // get DOM for last post
       adjustHeight(($('#messageInput').val($msg.find('.msgbody').html()))[0]);
       $('#delmsg').css('display', 'none');
       lastpost.remove();
@@ -756,7 +762,7 @@
       var lurktime = 0;
       shame = [];
       snap.forEach(function(csnap) {
-        var name = csnap.key();
+        var name = csnap.key;
         var v = csnap.val();
         shame.push({ name: name, online: v.online, offline: v.offline, status: v.status });
         if (name !== id) {  // not me
