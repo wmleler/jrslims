@@ -137,7 +137,8 @@
     function startup(snap) {
       me = snap.val();  // user profile
       if (me === null) {  // new user
-        var t = $.trim(prompt('ID "'+id+'" doesn\'t exist. Retype to create it or switch to different name.'));
+        var t = $.trim(prompt('ID "'+id+'" doesn\'t exist. '+
+            'Retype to create it or switch to different name.'));
         if (t.length === 0) {
           window.location.href = 'http://jrslims.com';
           return;
@@ -219,7 +220,7 @@
       newdiv.find('div.userimg, div.uservid').toggleClass('worksmall', work).click(imagebig);
       newdiv.find('blink').toggleClass('hideme', work);
       $('#messagesDiv').prepend(newdiv);
-      // if (mstamp <= lastseen) {
+
       if (snap.key <= lastseen) {
         newdiv.addClass('read');
       } else {  // unread message, animate
@@ -455,10 +456,10 @@
     // receive message read from database and mark messages
     myuserdb.child('lastseen').on('value', function(snap) {
       unseen = 0;
-      var lsid = snap.val();
+      lastseen = snap.val();
       $('.msgdiv:not(.read)').filter(function(/* i, el */) {
-        if (this.id > lsid) { unseen++; }
-        return this.id <= lsid;
+        if (this.id > lastseen) { unseen++; }
+        return this.id <= lastseen;
       }).addClass('read');
 
       settitle(); // show number of unread messages
