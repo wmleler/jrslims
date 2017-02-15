@@ -39,7 +39,7 @@
   var messageInputHeight; // default height of messageInput textarea
   var paramOverride = false;
   var client = ''; // user's domain or IP address
-  var clientIP = '';  // client IP address only
+  var clientIP = '';  // user's IP address only
   var browserinfo;  // https://github.com/WhichBrowser/WhichBrowser
   var lastAnimation = null; // last message animating open
   var lastpost = null;  // save last message for editing
