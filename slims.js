@@ -257,6 +257,12 @@
 
     function presencechange(snap) { // manage whether I am connected or not, and timestamp when I disconnect
       if (snap.val() === true) {  // online
+        // get client domain or IP address
+        $.getJSON('client.php', function(data) {
+          client = $.trim(data.client);
+          clientIP = $.trim(data.clientIP);
+        });
+
         // get browser info - https://github.com/WhichBrowser/WhichBrowser
         browserinfo = (!browserinfo && window.WhichBrowser) ?
             new WhichBrowser() : { device: {} };
@@ -800,12 +806,6 @@
       $('#helpdiv').show().one('click', function() {
         $('#helpdiv').hide(300);
       });
-    });
-
-    // get client domain or IP address
-    $.getJSON('client.php', function(data) {
-      client = $.trim(data.client);
-      clientIP = $.trim(data.clientIP);
     });
 
     // get script URL of Slims
