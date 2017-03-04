@@ -108,6 +108,14 @@
     $('body').css('font-size', fontsize + 'px');
     miserlou.volume = volume * 0.01;
 
+    $('#delmsg').on('mouseover', function() {
+      if (!lastpost) { return; }
+      $('#'+lastpost.key).addClass('highlight');
+    }).on('mouseout', function() {
+      if (!lastpost) { return; }
+      $('#'+lastpost.key).removeClass('highlight');
+    });
+
     // determine user id
 		var t;
     while (id.search(/^[\w ]{1,}$/) !== 0) {
@@ -250,7 +258,8 @@
     function presencechange(snap) { // manage whether I am connected or not, and timestamp when I disconnect
       if (snap.val() === true) {  // online
         // get browser info - https://github.com/WhichBrowser/WhichBrowser
-        if (!browserinfo) { browserinfo = new WhichBrowser(); }
+        browserinfo = (!browserinfo && window.WhichBrowser) ?
+            new WhichBrowser() : { device: {} };
         var status = {
           time: firebase.database.ServerValue.TIMESTAMP, // login time
           client: client, // domain name or IP address
@@ -266,6 +275,7 @@
           devicemanufacturer: (browserinfo.device.manufacturer ? browserinfo.device.manufacturer.toString() : ''),  // e.g., Apple
           devicemodel: (browserinfo.device.model ? browserinfo.device.model.toString() : '')  // e.g., iPhone
         };
+
         var stat = mystatusdb.push(status); // status of this connection
         stat.onDisconnect().remove(); // remove on disconnect
         myonoffdb.onDisconnect().update({ offline: firebase.database.ServerValue.TIMESTAMP });  // disconnect time
@@ -368,7 +378,10 @@
 
       uptime(); // update times
 
-      if (console && console.log) { console.log('number of messages:', Object.keys(messageBodies).length); }
+      if (console && console.log) {
+        console.log('number of messages:', Object.keys(messageBodies).length);
+      }
+
       deletemsg(null);  // delete expired messages and files
       // if (Object.keys(messageBodies).length > KEEPNUM) {  // might need to delete an old message
         // dnum = Math.min(3, messageBodies.length - KEEPNUM);
